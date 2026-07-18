@@ -1,0 +1,10 @@
+components/ui/
+Componentes compartidos por todas las marcas:
+
+Button
+Card
+Modal
+Hero
+Navbar
+Footer
+Section
