@@ -5,9 +5,14 @@
 }
 
 :root.yosef {
-  --color-primary: #7c3aed;
-  --color-accent: #ec4899;
-  --color-bg: #faf5ff;
+  --color-primary: #24c2e4;
+  --color-accent: #016c9c;
+  --color-bg: #ffffff;
+  --text-main: #050505;
+  --text-secondary: #6b7280;
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(1, 108, 156, 0.12);
+  --transition-smooth: 0.3s ease;
 }
 
 :root.bellum {
@@ -18,26 +23,4 @@
 
 body {
   background: var(--color-bg);
-}
-
-.brand-hero {
-  padding: 2rem;
-  border-radius: var(--radius-md);
-  background: white;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-}
-
-.eyebrow {
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  color: var(--color-primary);
-}
-
-.brand-hero h1 {
-  color: #111827;
-}
-
-.brand-hero p {
-  color: #4b5563;
 }

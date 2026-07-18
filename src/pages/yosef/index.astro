@@ -1,10 +1,22 @@
 ---
 import YosefLayout from '../../layouts/YosefLayout.astro';
-import HeroIntro from '../../components/brands/yosef/HeroIntro.astro';
+import Header from '../../components/brands/yosef/Header.astro';
+import HeroSection from '../../components/brands/yosef/HeroSection.astro';
+import ContentCards from '../../components/brands/yosef/ContentCards.astro';
+import Footer from '../../components/brands/yosef/Footer.astro';
 ---
 
 <YosefLayout>
-  <main>
-    <HeroIntro />
+  <Header />
+
+  <main class="main-content">
+    <HeroSection />
+    <ContentCards />
   </main>
+
+  <Footer />
 </YosefLayout>
+
+<script>
+  import '../../scripts/yosef-scroll.ts';
+</script>

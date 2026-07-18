@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from 'astro:content';
+import LaboratorioAccordion from './LaboratorioAccordion.svelte';
+
+const entries = (await getCollection('laboratorio'))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const sections = await Promise.all(entries.map(async (entry) => ({
+  entry,
+  Content: (await render(entry)).Content,
+})));
+
+const groups = [...new Set(entries.map((entry) => entry.data.group))].map((title) => ({
+  title,
+  entries: entries
+    .filter((entry) => entry.data.group === title)
+    .map((entry) => ({ title: entry.data.title, anchor: entry.data.anchor })),
+}));
+---
+
+<div class="lab-layout">
+  <LaboratorioAccordion groups={groups} client:load />
+
+  <main class="lab-content">
+    {sections.map(({ entry, Content }, index) => {
+      const Heading = index === 0 ? 'h1' : 'h2';
+      return (
+        <article id={entry.data.anchor} class="lab-card">
+          <Heading>{entry.data.title}</Heading>
+          {entry.data.description && <p>{entry.data.description}</p>}
+          <Content />
+        </article>
+      );
+    })}
+  </main>
+</div>

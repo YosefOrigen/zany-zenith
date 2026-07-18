@@ -1,7 +1,8 @@
 ---
 import '../styles/global.css';
 import '../styles/brands.css';
-const { brand = 'origen' } = Astro.props;
+const { brand = 'origen', title } = Astro.props;
+const pageTitle = title ?? brand;
 ---
 
 <!doctype html>
@@ -10,7 +11,7 @@ const { brand = 'origen' } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <title>{brand}</title>
+    <title>{pageTitle}</title>
   </head>
   <body>
     <slot />

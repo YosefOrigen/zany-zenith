@@ -1,0 +1,36 @@
+---
+const navItems = [
+  { label: 'Inicio', href: '/yosef' },
+  { label: 'Juegos', href: '/yosef/juegos' },
+  { label: 'Laboratorio', href: '/yosef/laboratorio' },
+  { label: 'Recursos', href: '/yosef/recursos' },
+];
+const { title = 'YOSEF ORIGEN', subheader, variant = 'default' } = Astro.props;
+---
+
+<div class:list={['header-row', variant === 'laboratorio' && 'header-row--laboratorio']}>
+  <header class="header">
+    <input type="checkbox" id="menu-toggle" class="menu-toggle" />
+    <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
+
+    <div class="brand-heading">
+      <div class="logo-text">{title}</div>
+      {subheader && <p class="brand-subheader">{subheader}</p>}
+    </div>
+
+    <nav class="nav" aria-label="Navegación principal">
+      <ul class="nav-list">
+        {navItems.map((item) => (
+          <li class={item.label === 'Únete' ? 'cta' : ''}>
+            <a href={item.href}>{item.label}</a>
+          </li>
+        ))}
+        <li class="cta"><a href="#">Únete</a></li>
+      </ul>
+    </nav>
+  </header>
+</div>

@@ -1,7 +1,9 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import '../styles/yosef.css';
+const { title = 'Yosef Origen' } = Astro.props;
 ---
 
-<BaseLayout brand="yosef">
+<BaseLayout brand="yosef" title={title}>
   <slot />
 </BaseLayout>
