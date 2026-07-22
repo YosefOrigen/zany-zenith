@@ -1,30 +1,17 @@
 ---
-const cards = [
-  {
-    title: 'Último Proyecto',
-    text: 'Explora la documentación técnica y el prototipo funcional de mi último lanzamiento.',
-  },
-  {
-    title: 'Pack de Assets 2D',
-    text: 'Descarga directa de spritesheets y elementos de interfaz para tus proyectos.',
-  },
-  {
-    title: 'Workshop',
-    text: 'Lógica avanzada de saltos y colisiones para motores 2D.',
-  },
-  {
-    title: 'Devlog',
-    text: 'Análisis de optimización y gestión de estados en videojuegos.',
-  },
-];
+import { getCollection } from 'astro:content';
+
+const articulos = await getCollection('inicio');
 ---
 
 <section class="articles-grid">
-  {cards.map((card) => (
+  {articulos.map((articulo) => (
     <article class="card">
-      <div class="card-image">Example</div>
-      <h3>{card.title}</h3>
-      <p>{card.text}</p>
+      <div class="card-image">
+        <img src={articulo.data.img} alt={articulo.data.title} />
+      </div>
+      <h3>{articulo.data.title}</h3>
+      <p>{articulo.data.text}</p>
     </article>
   ))}
 </section>

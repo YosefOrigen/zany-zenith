@@ -1,4 +1,4 @@
-:root.yosef .header-row--laboratorio {
+:root.yosef .header-row--header_2 {
   top: 0;
   left: 0;
   width: 100%;
@@ -6,7 +6,7 @@
   transform: none;
 }
 
-:root.yosef .header-row--laboratorio .header {
+:root.yosef .header-row--header_2 .header {
   min-height: 76px;
   padding: 10px max(24px, calc((100vw - 1200px) / 2));
   border-right: 0;

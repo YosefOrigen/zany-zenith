@@ -1,0 +1,34 @@
+---
+import banner from '../../../assets/yosef/Banner Yosef_YT.jpg';
+import instagram from '../../../assets/icon/instagram.png';
+import discord from '../../../assets/icon/discord.png';
+import tiktok from '../../../assets/icon/tiktok.png';
+import facebook from '../../../assets/icon/facebook.png';
+import youtube from '../../../assets/icon/youtube.png';
+
+const socialLinks = [
+  { label: 'Instagram', icon: instagram },
+  { label: 'Discord', icon: discord },
+  { label: 'TikTok', icon: tiktok },
+  { label: 'Facebook', icon: facebook },
+  { label: 'YouTube', icon: youtube },
+];
+---
+
+<footer class="footer">
+  <div class="footer-left">
+    <h3 class="creator-name">YOSEF ORIGEN</h3>
+    <p class="copyright">© 2026 Origen Estudio</p>
+  </div>
+
+  <div class="footer-right">
+    <nav class="social-links" aria-label="Redes sociales">
+      {socialLinks.map(({ label, icon }) => (
+        <a href="#" class="social-icon" title={label} aria-label={label}>
+          <img src={icon.src} alt="" />
+        </a>
+      ))}
+    </nav>
+  </div>
+</footer>
+
