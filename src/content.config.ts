@@ -13,13 +13,4 @@ const laboratorio = defineCollection({
   }),
 });
 
-const inicio = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/Inicio' }),
-  schema: z.object({
-    img: z.string(),
-    title: z.string(),
-    text: z.string(),
-  }),
-});
-
-export const collections = { laboratorio, inicio };
+export const collections = { laboratorio };

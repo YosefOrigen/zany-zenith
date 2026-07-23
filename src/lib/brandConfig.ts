@@ -8,9 +8,9 @@ export const brandConfig = {
     accent: '#1d4ed8',
   },
   yosef: {
-    slug: 'yosef-origen',
-    name: 'Yosef Origen',
-    title: 'Yosef Origen',
+    slug: 'yosef',
+    name: 'Yosef',
+    title: 'Yosef',
     description: 'Experiencias creativas, juegos y recursos para explorar.',
     theme: 'yosef',
     accent: '#7c3aed',

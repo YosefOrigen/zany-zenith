@@ -8,7 +8,7 @@ const navItems = [
 const { title = 'YOSEF ORIGEN', subheader, variant = 'default' } = Astro.props;
 ---
 
-<div class:list={['header-row', variant === 'header_2' && 'header-row--header_2']}>
+<div class:list={['header-row', variant === 'laboratorio' && 'header-row--laboratorio']}>
   <header class="header">
     <input type="checkbox" id="menu-toggle" class="menu-toggle" />
     <label for="menu-toggle" class="hamburger" aria-label="Abrir menú">
