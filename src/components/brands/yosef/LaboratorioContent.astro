@@ -10,27 +10,109 @@ const sections = await Promise.all(entries.map(async (entry) => ({
   Content: (await render(entry)).Content,
 })));
 
-const groups = [...new Set(entries.map((entry) => entry.data.group))].map((title) => ({
-  title,
-  entries: entries
-    .filter((entry) => entry.data.group === title)
-    .map((entry) => ({ title: entry.data.title, anchor: entry.data.anchor })),
-}));
+// Definir orden de categorías
+const categoryOrder = [
+  'por-donde-empezar',
+  'cursos',
+  'herramientas',
+  'conceptos',
+  'faq',
+];
+
+const categoryNames: Record<string, string> = {
+  'por-donde-empezar': 'Por dónde empezar',
+  cursos: 'Cursos y tutoriales',
+  herramientas: 'Herramientas',
+  conceptos: 'Conceptos',
+  faq: 'Preguntas frecuentes',
+};
+
+const categoryIcons: Record<string, string> = {
+  'por-donde-empezar': '🚀',
+  cursos: '🎓',
+  herramientas: '🛠',
+  conceptos: '🧠',
+  faq: '❓',
+};
+
+const categories = categoryOrder
+  .filter((slug) => sections.some((s) => s.entry.data.category === slug))
+  .map((slug) => ({
+    slug,
+    title: categoryNames[slug] || slug,
+    icon: categoryIcons[slug] || '📄',
+    entries: sections
+      .filter((s) => s.entry.data.category === slug)
+      .map((s) => ({
+        title: s.entry.data.title,
+        slug: s.entry.id.replace(/\.md$/, '').replace(/[/\\]/g, '-'),
+        parent: s.entry.data.parent,
+        order: s.entry.data.order,
+      })),
+  }));
+
+const defaultCategory = categories.length > 0 ? categories[0].slug : '';
 ---
 
 <div class="lab-layout">
-  <LaboratorioAccordion groups={groups} client:load />
+  <LaboratorioAccordion
+    categories={categories}
+    defaultCategory={defaultCategory}
+    client:load
+  />
 
   <main class="lab-content">
+    <!-- HOME VIEW: Preview cards -->
+    <section class="lab-home" style="display: grid;">
+      <h1 class="lab-home-title">Laboratorio</h1>
+      <p class="lab-home-subtitle">Explora las categorías y encuentra guías, recursos y herramientas para tus proyectos.</p>
+      <div class="lab-home-grid">
+        {categories.map((cat) => (
+          <article class="lab-home-card" data-category={cat.slug}>
+            <div class="lab-home-card-icon">{cat.icon}</div>
+            <h2>{cat.title}</h2>
+            <p>{cat.entries[0]?.title || 'Explorar categoría'}</p>
+            <span class="lab-home-card-count">{cat.entries.length} artículo{cat.entries.length !== 1 ? 's' : ''}</span>
+          </article>
+        ))}
+      </div>
+    </section>
+
     {sections.map(({ entry, Content }, index) => {
       const Heading = index === 0 ? 'h1' : 'h2';
+      const cat = entry.data.category;
+      const slug = entry.id.replace(/\.md$/, '').replace(/[/\\]/g, '-');
+      const parent = entry.data.parent;
       return (
-        <article id={entry.data.anchor} class="lab-card">
+        <article
+          id={slug}
+          class="lab-card lab-layer"
+          data-layer={cat}
+          data-parent={parent || ''}
+          data-article-slug={slug}
+          style="display: none;"
+        >
           <Heading>{entry.data.title}</Heading>
-          {entry.data.description && <p>{entry.data.description}</p>}
+          {entry.data.description && <p class="lab-description">{entry.data.description}</p>}
           <Content />
         </article>
       );
     })}
   </main>
 </div>
+
+<script>
+  // Intercept clicks on home cards to navigate to category
+  document.addEventListener('click', (e) => {
+    const card = (e.target as HTMLElement).closest('.lab-home-card');
+    if (card) {
+      const cat = card.getAttribute('data-category');
+      if (cat) {
+        // Find the category button in the sidebar and click it
+        const catBtn = document.querySelector(`.lab-category-toggle[aria-controls="lab-panel-${cat}"]`);
+        if (catBtn) (catBtn as HTMLButtonElement).click();
+      }
+    }
+  });
+</script>
+

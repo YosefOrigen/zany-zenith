@@ -6,8 +6,8 @@ const laboratorio = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/laboratorio' }),
   schema: z.object({
     title: z.string(),
-    group: z.string(),
-    anchor: z.string(),
+    category: z.string(),
+    parent: z.string().optional(),
     order: z.number(),
     description: z.string().optional(),
   }),
