@@ -1,35 +1,17 @@
-# Plan de Implementación: Sistema de Capas (Layers) para Laboratorio
+# Sidebar Fijo Colapsable - Plan de Implementación
 
-## ✅ Paso 1: Actualizar `content.config.ts`
-- [x] Schema actualizado: `group` → `category`, agregar `parent` opcional, quitar `anchor`
+## Pasos
 
-## ✅ Paso 2: Reorganizar archivos Markdown
-- [x] Carpetas creadas: `por-donde-empezar/`, `cursos/`, `herramientas/`, `conceptos/`, `faq/`
-- [x] Archivos existentes eliminados (desarrollo/, introduccion/)
-- [x] Nuevos artículos creados con frontmatter actualizado
-
-## ✅ Paso 3: Actualizar `LaboratorioAccordion.svelte`
-- [x] Recibir `categories` con slugs, títulos, iconos y entradas
-- [x] Manejar estado `activeCategory` y `expandedCategories` con Svelte 5 runes
-- [x] Al hacer clic en categoría: expandir acordeón + cambiar capa activa
-- [x] Al hacer clic en artículo: mostrar solo ese artículo
-- [x] Botones de artículo con estado `active`
-
-## ✅ Paso 4: Actualizar `LaboratorioContent.astro`
-- [x] Agrupar entries por `category`
-- [x] Renderizar cada categoría como `<article>` con `data-layer` y `data-article-slug`
-- [x] Pasar estructura de categorías al acordeón
-- [x] Slugs sanitizados (sin `/`)
-
-## ✅ Paso 5: Actualizar `index.astro`
-- [x] Eliminado `<nav class="lab-subnav">`
-
-## ✅ Paso 6: Actualizar CSS
-- [x] Eliminados estilos de `.lab-subnav`
-- [x] Agregados estilos para: `.lab-category-toggle`, `.lab-category-content`, `.lab-article-link`, `.lab-description`, tablas
-- [x] Ajustado espaciado general
-
-## ✅ Paso 7: Build exitoso
-- [x] `astro build` completado sin errores (10 páginas generadas)
-- [x] Página `/yosef/laboratorio/index.html` generada correctamente
+- [x] 1. Leer y entender archivos relevantes
+- [x] 2. Plan aprobado por el usuario
+- [x] 3. Editar `src/styles/yosef/yosef-laboratorio.css`
+  - [x] 3a. `.lab-layout`: grid 1 columna + `padding-left` dinámico con `:has()`
+  - [x] 3b. `.lab-sidebar` desktop: `position: fixed; left: 0; top: 100px; height: calc(100vh - 100px)`
+  - [x] 3c. `.lab-sidebar-content` desktop: estructura colapsable (grid, transiciones width/opacity)
+  - [x] 3d. Mostrar `.lab-mobile-accordion-trigger` también en desktop
+  - [x] 3e. Mobile: reset `padding-left: 0` y `margin: 0` en sidebar-content
+- [x] 4. Editar `src/components/brands/yosef/LaboratorioAccordion.svelte`
+  - [x] 4a. Import `onMount`
+  - [x] 4b. En `onMount`, si `window.innerWidth > 850`, `isSidebarOpen = true`
+- [ ] 5. Verificar build
 

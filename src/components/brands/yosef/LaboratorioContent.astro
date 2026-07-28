@@ -12,6 +12,7 @@ const sections = await Promise.all(entries.map(async (entry) => ({
 
 // Definir orden de categorías
 const categoryOrder = [
+  'introducción',
   'por-donde-empezar',
   'cursos',
   'herramientas',
@@ -45,7 +46,7 @@ const categories = categoryOrder
       .filter((s) => s.entry.data.category === slug)
       .map((s) => ({
         title: s.entry.data.title,
-        slug: s.entry.id.replace(/\.md$/, '').replace(/[/\\]/g, '-'),
+        slug: s.entry.id.replace(/\.(md|mdx)$/, '').replace(/[/\\]/g, '-'),
         parent: s.entry.data.parent,
         order: s.entry.data.order,
       })),
@@ -56,12 +57,15 @@ const defaultCategory = categories.length > 0 ? categories[0].slug : '';
 
 <div class="lab-layout">
   <LaboratorioAccordion
-    categories={categories}
-    defaultCategory={defaultCategory}
-    client:load
+  categories={categories}
+  defaultCategory={defaultCategory}
+  client:load
   />
-
+  
   <main class="lab-content">
+    <header class="lab-intro">
+      <p>Notas, recursos y guías para llevar tus ideas de videojuego a la práctica.</p>
+    </header>
     <!-- HOME VIEW: Preview cards -->
     <section class="lab-home" style="display: grid;">
       <h1 class="lab-home-title">Laboratorio</h1>
@@ -81,7 +85,7 @@ const defaultCategory = categories.length > 0 ? categories[0].slug : '';
     {sections.map(({ entry, Content }, index) => {
       const Heading = index === 0 ? 'h1' : 'h2';
       const cat = entry.data.category;
-      const slug = entry.id.replace(/\.md$/, '').replace(/[/\\]/g, '-');
+      const slug = entry.id.replace(/\.(md|mdx)$/, '').replace(/[/\\]/g, '-');
       const parent = entry.data.parent;
       return (
         <article

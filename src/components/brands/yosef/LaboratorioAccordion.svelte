@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+
   type Entry = {
     title: string;
     slug: string;
@@ -22,6 +24,12 @@
   let activeArticle = $state<string | null>(null);
   let expandedCategories = $state(new Set<string>());
   let isSidebarOpen = $state(false);
+
+  onMount(() => {
+    if (window.innerWidth > 850) {
+      isSidebarOpen = true;
+    }
+  });
 
   function showHome() {
     activeCategory = '';

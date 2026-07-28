@@ -1,14 +1,14 @@
 :root.origen {
   --color-primary: #1d4ed8;
   --color-accent: #f59e0b;
-  --color-bg: #f8fafc;
+  --color-bg: #f1f4f9;
 }
 
 :root.yosef {
   --color-primary: #24c2e4;
   --color-accent: #016c9c;
-  --color-bg: #ffffff;
-  --text-main: #050505;
+  --color-bg: linear-gradient(90deg,rgba(226, 235, 240, 1) 0%, rgba(254, 254, 254, 1) 30%, rgba(254, 254, 254, 1) 70%, rgba(226, 235, 240, 1) 100%);
+  --text-main: #2b2a2a;
   --text-secondary: #6b7280;
   --glass-bg: rgba(255, 255, 255, 0.72);
   --glass-border: rgba(1, 108, 156, 0.12);
@@ -18,7 +18,7 @@
 :root.bellum {
   --color-primary: #0f766e;
   --color-accent: #14b8a6;
-  --color-bg: #f0fdfa;
+  --color-bg: #f1f4f9;
 }
 
 body {
