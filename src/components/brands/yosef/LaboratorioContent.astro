@@ -21,6 +21,7 @@ const categoryOrder = [
 ];
 
 const categoryNames: Record<string, string> = {
+  introducción: 'Introducción',
   'por-donde-empezar': 'Por dónde empezar',
   cursos: 'Cursos y tutoriales',
   herramientas: 'Herramientas',
@@ -28,13 +29,16 @@ const categoryNames: Record<string, string> = {
   faq: 'Preguntas frecuentes',
 };
 
+
 const categoryIcons: Record<string, string> = {
+  introducción: '📄',
   'por-donde-empezar': '🚀',
   cursos: '🎓',
   herramientas: '🛠',
   conceptos: '🧠',
   faq: '❓',
 };
+
 
 const categories = categoryOrder
   .filter((slug) => sections.some((s) => s.entry.data.category === slug))
@@ -49,6 +53,7 @@ const categories = categoryOrder
         slug: s.entry.id.replace(/\.(md|mdx)$/, '').replace(/[/\\]/g, '-'),
         parent: s.entry.data.parent,
         order: s.entry.data.order,
+        subsections: s.entry.data.subsections || [],
       })),
   }));
 
@@ -57,19 +62,23 @@ const defaultCategory = categories.length > 0 ? categories[0].slug : '';
 
 <div class="lab-layout">
   <LaboratorioAccordion
-  categories={categories}
-  defaultCategory={defaultCategory}
-  client:load
+    categories={categories}
+    defaultCategory={defaultCategory}
+    client:load
   />
   
   <main class="lab-content">
-    <header class="lab-intro">
-      <p>Notas, recursos y guías para llevar tus ideas de videojuego a la práctica.</p>
-    </header>
+
     <!-- HOME VIEW: Preview cards -->
     <section class="lab-home" style="display: grid;">
-      <h1 class="lab-home-title">Laboratorio</h1>
-      <p class="lab-home-subtitle">Explora las categorías y encuentra guías, recursos y herramientas para tus proyectos.</p>
+      <header class="lab-intro">
+        <div style="display: grid; gap: 10px;">
+          <span class="lab-intro-badge">🚀 Bienvenido al</span>
+          <h1 class="lab-home-title">LABORATORIO</h1>
+          <h2 class="lab-home-subtitle">Explora las categorías y encuentra guías, recursos y herramientas para tus proyectos.</h2>
+        </div>
+        <img src="../../../src/assets/yosef/yosef_quimico.png" alt="yosef_quimico" >
+      </header>
       <div class="lab-home-grid">
         {categories.map((cat) => (
           <article class="lab-home-card" data-category={cat.slug}>
@@ -112,11 +121,9 @@ const defaultCategory = categories.length > 0 ? categories[0].slug : '';
     if (card) {
       const cat = card.getAttribute('data-category');
       if (cat) {
-        // Find the category button in the sidebar and click it
-        const catBtn = document.querySelector(`.lab-category-toggle[aria-controls="lab-panel-${cat}"]`);
-        if (catBtn) (catBtn as HTMLButtonElement).click();
+        // Dispatch a custom event so the accordion shows the category content
+        window.dispatchEvent(new CustomEvent('open-category', { detail: { slug: cat } }));
       }
     }
   });
 </script>
-

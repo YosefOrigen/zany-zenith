@@ -1,0 +1,28 @@
+:root.yosef .titulo-2-lab {
+    text-align: center;
+}
+
+.text-primary {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.text-success {
+    color: #22c55e;
+    font-weight: 600;
+}
+
+.text-warning {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.text-danger {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+.text-accent {
+    color: #8b5cf6;
+    font-weight: 700;
+}

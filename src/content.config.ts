@@ -10,6 +10,7 @@ const laboratorio = defineCollection({
     parent: z.string().optional(),
     order: z.number(),
     description: z.string().optional(),
+    subsections: z.array(z.string()).optional(),
   }),
 });
 

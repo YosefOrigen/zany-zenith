@@ -1,3 +1,9 @@
+:root.yosef blockquote{
+  padding-left: 10px;
+  border-left: 5px solid #d9d9d9;
+  border-radius: 6px;
+}
+
 :root.yosef .header-row--header_2 {
   top: 0;
   left: 0;
@@ -32,9 +38,78 @@
   margin-top: 74px;
 }
 
+:root.yosef .lab-intro img{
+  max-width: min(400px, 45%);
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 1;
+}
+
 :root.yosef .lab-intro {
-  margin-bottom: 32px;
-  padding-top: 76px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: nowrap;
+  padding: clamp(28px, 4vw, 48px) clamp(24px, 4vw, 52px);
+  border: 1px solid rgba(1, 108, 156, .14);
+  border-radius: 32px;
+  background:
+    radial-gradient(1000px 300px at 85% -20%, rgba(36, 194, 228, .16), transparent 60%),
+    linear-gradient(135deg, #ffffff 0%, #f3fbfd 55%, #e8f6fb 100%);
+  box-shadow: 0 24px 60px rgba(14, 25, 45, .1);
+}
+
+/* Orbe decorativo sutil (solo decoración de fondo, no afecta a la imagen) */
+:root.yosef .lab-intro::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(36, 194, 228, .18), transparent 65%);
+  pointer-events: none;
+}
+
+:root.yosef .lab-intro::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  left: -60px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(1, 108, 156, .1), transparent 65%);
+  pointer-events: none;
+}
+
+/* El contenedor de texto puede encogerse para que la imagen se mantenga a la derecha */
+:root.yosef .lab-intro > div {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+:root.yosef .lab-intro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-bottom: 6px;
+  padding: 6px 16px;
+  border: 1px solid rgba(36, 194, 228, .3);
+  border-radius: 999px;
+  background: rgba(36, 194, 228, .1);
+  color: var(--color-accent);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
 }
 
 :root.yosef .lab-intro p {
@@ -75,7 +150,7 @@
   grid-template-rows: auto 1fr;
   align-items: start;
   width: 48px;
-  max-height: 48px;
+  height: 88vh;
   overflow: hidden;
   padding: 0;
   border: 1px solid rgba(1, 108, 156, .18);
@@ -109,7 +184,7 @@
   padding: 0;
   place-items: center;
   border: 0;
-  background: transparent;
+  /* background: #ffffffb3; */
   color: var(--color-accent);
   cursor: pointer;
 }
@@ -221,7 +296,7 @@
   border: 0;
   border-radius: 12px;
   background: #f0f3f6;
-  color: #222;
+  color: var(--text-main);
   cursor: pointer;
   font: 700 1.05rem 'Barlow Condensed', sans-serif;
   text-align: left;
@@ -296,23 +371,114 @@
   font-size: .75rem;
 }
 
+/* ---- Chevron de artículo con sub-secciones ---- */
+:root.yosef .lab-article-link {
+  cursor: pointer;
+  justify-content: flex-start;
+}
+
+:root.yosef .lab-article-chevron {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+  flex-shrink: 0;
+  color: var(--color-accent);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 6px;
+  transition: transform var(--transition-smooth), background var(--transition-smooth);
+}
+
+:root.yosef .lab-article-chevron:hover {
+  background: rgba(36, 194, 228, .15);
+}
+
+:root.yosef .lab-article-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* ---- Sub-secciones anidadas dentro de un artículo ---- */
+:root.yosef .lab-subsection-list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 2px 0 2px 22px;
+  list-style: none;
+  border-left: 1px solid rgba(1, 108, 156, .12);
+}
+
+:root.yosef .lab-subsection-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  font: 400 .83rem 'Inter', sans-serif;
+  text-align: left;
+  text-decoration: none;
+  transition: background var(--transition-smooth), color var(--transition-smooth);
+}
+
+:root.yosef .lab-subsection-link:hover {
+  background: rgba(36, 194, 228, .08);
+  color: var(--color-accent);
+}
+
+:root.yosef .lab-subsection-link.active {
+  background: rgba(36, 194, 228, .15);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* Resaltado temporal del heading de destino al navegar por sub-sección */
+:root.yosef .lab-subsection-highlight {
+  animation: lab-subsection-pulse 1.6s ease-out;
+}
+
+@keyframes lab-subsection-pulse {
+  0% { background: rgba(36, 194, 228, .35); }
+  30% { background: rgba(36, 194, 228, .25); }
+  100% { background: transparent; }
+}
+
+/* Evita que el header fijo tape el heading al hacer scroll */
+:root.yosef .lab-card h1,
+:root.yosef .lab-card h2,
+:root.yosef .lab-card h3 {
+  scroll-margin-top: 110px;
+}
+
 /* ===== HOME VIEW ===== */
 :root.yosef .lab-home {
   gap: 24px;
 }
 
 :root.yosef .lab-home-title {
+  background: linear-gradient(150deg, var(--color-accent), var(--color-primary) 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
   margin: 0;
+  color: transparent;
   font-family: 'Barlow Condensed', sans-serif;
-  font-size: 2.4rem;
-  color: #101010;
+  font-size: clamp(2.4rem, 5vw, 4.5rem);
+  font-weight: 900;
+  letter-spacing: .01em;
+  line-height: .95;
 }
 
 :root.yosef .lab-home-subtitle {
-  margin: -16px 0 0;
+  margin: 6px 0 0;
   color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: clamp(.95rem, 1.4vw, 1.3rem);
+  line-height: 1.5;
   max-width: 600px;
 }
 
@@ -348,7 +514,7 @@
   margin: 0 0 6px;
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 1.4rem;
-  color: #222;
+  color: var(--text-main);
 }
 
 :root.yosef .lab-home-card p {
@@ -372,10 +538,14 @@
 :root.yosef .lab-content {
   display: grid;
   gap: 24px;
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+
 }
 
 :root.yosef .lab-card {
-  padding: 30px;
+  padding: 50px;
   border: 1px solid rgba(20, 20, 20, .08);
   border-radius: 28px;
   background: #fafafa;
@@ -386,7 +556,7 @@
 :root.yosef .lab-card h2,
 :root.yosef .lab-card h3 {
   margin: 0 0 14px;
-  color: #101010;
+  color: var(--text-main);
   font-family: 'Barlow Condensed', sans-serif;
 }
 
@@ -407,10 +577,13 @@
   line-height: 1.6;
 }
 
-:root.yosef .lab-card p,
+:root.yosef .lab-card p {
+  color: #4e4e4e;
+  line-height: 20px;
+}
 :root.yosef .lab-card li {
   color: #4e4e4e;
-  line-height: 1.85;
+  line-height: 25px;
 }
 
 :root.yosef .lab-card p:last-child {
@@ -458,6 +631,41 @@
 
 /* ===== RESPONSIVE (Mobile/Tablet) ===== */
 @media (max-width: 850px) {
+
+  :root.yosef .lab-intro {
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  :root.yosef .lab-intro > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  :root.yosef .lab-intro-badge {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  :root.yosef .lab-intro img {
+    max-width: 95%;
+    margin: 0 auto;
+  }
+
+  :root.yosef .lab-home-subtitle {
+    max-width: 100%;
+    font-size: clamp(.95rem, 2.4vw, 1.3rem);
+
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  :root.yosef .lab-card {
+    padding: 30px;
+  }
   :root.yosef .lab-page {
     margin-top: 76px;
   }
@@ -468,8 +676,8 @@
 
   :root.yosef .lab-sidebar {
     position: fixed;
-    top: 136px;
-    left: 16px;
+    top: 89px;
+    left: 14px;
     align-self: auto;
     /* background: #ffffff; */
   }
@@ -490,31 +698,47 @@
   :root.yosef .lab-sidebar-content[data-open='true'] {
     width: min(320px, calc(100vw - 32px));
     height: auto;
-    max-height: calc(100dvh - 214px);
+    /* max-height: calc(100dvh - 214px); */
     padding: 12px;
     border-radius: 20px;
   }
+
+:root.yosef .lab-content {
+    margin: 0;
+}
 
   :root.yosef .lab-accordion-wrapper {
     max-height: calc(100dvh - 280px);
   }
 }
 
-@media (max-width: 560px) {
-  :root.yosef .lab-page {
-    width: min(100% - 32px, 1200px);
+/* ===== RESPONSIVE (Móviles pequeños) ===== */
+/* @media (max-width: 480px) {
+
+  :root.yosef .lab-intro {
+    gap: 12px;
   }
 
-  :root.yosef .lab-sidebar {
-    top: 156px;
+  :root.yosef .lab-home-title {
+    font-size: clamp(2.2rem, 13vw, 4rem);
+    line-height: 0.95;
   }
 
-  :root.yosef .lab-sidebar-content[data-open='true'] {
-    max-height: calc(100dvh - 234px);
-    
+  :root.yosef .lab-home-subtitle {
+    margin: 0 auto;
+    font-size: clamp(0.9rem, 4vw, 1.15rem);
+    line-height: 1.5;
+  }
+
+  :root.yosef .lab-intro img {
+    max-width: 60%;
   }
 
   :root.yosef .lab-card {
     padding: 22px;
   }
-}
+
+  :root.yosef .lab-home-grid {
+    grid-template-columns: 1fr;
+  }
+} */
