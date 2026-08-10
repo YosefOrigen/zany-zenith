@@ -14,13 +14,14 @@ const laboratorio = defineCollection({
   }),
 });
 
-const inicio = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/Inicio' }),
-  schema: z.object({
+const articulos = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/Inicio/articulos' }),
+schema: z.object({
     img: z.string(),
     title: z.string(),
     text: z.string(),
+    link: z.string().optional(),
   }),
 });
 
-export const collections = { laboratorio, inicio };
+export const collections = { laboratorio, articulos };

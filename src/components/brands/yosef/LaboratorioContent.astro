@@ -12,31 +12,30 @@ const sections = await Promise.all(entries.map(async (entry) => ({
 
 // Definir orden de categorías
 const categoryOrder = [
-  'introducción',
-  'por-donde-empezar',
-  'cursos',
-  'herramientas',
-  'conceptos',
-  'faq',
+  'Introducción',
+  'Por donde empezar',
+  // 'cursos',
+  // 'herramientas',
+  // 'conceptos',
+  // 'faq',
 ];
 
 const categoryNames: Record<string, string> = {
-  introducción: 'Introducción',
-  'por-donde-empezar': 'Por dónde empezar',
-  cursos: 'Cursos y tutoriales',
-  herramientas: 'Herramientas',
-  conceptos: 'Conceptos',
-  faq: 'Preguntas frecuentes',
+  Introducción: 'Introducción',
+  'Por donde empezar': 'Por dónde empezar',
+  // cursos: 'Cursos y tutoriales',
+  // herramientas: 'Herramientas',
+  // conceptos: 'Conceptos',
+  // faq: 'Preguntas frecuentes',
 };
 
-
 const categoryIcons: Record<string, string> = {
-  introducción: '📄',
-  'por-donde-empezar': '🚀',
-  cursos: '🎓',
-  herramientas: '🛠',
-  conceptos: '🧠',
-  faq: '❓',
+  Introducción: '📄',
+  'Por donde empezar': '🚀',
+  // cursos: '🎓',
+  // herramientas: '🛠',
+  // conceptos: '🧠',
+  // faq: '❓',
 };
 
 
@@ -45,7 +44,7 @@ const categories = categoryOrder
   .map((slug) => ({
     slug,
     title: categoryNames[slug] || slug,
-    icon: categoryIcons[slug] || '📄',
+    icon: categoryIcons[slug] || slug,
     entries: sections
       .filter((s) => s.entry.data.category === slug)
       .map((s) => ({
@@ -79,6 +78,7 @@ const defaultCategory = categories.length > 0 ? categories[0].slug : '';
         </div>
         <img src="../../../src/assets/yosef/yosef_quimico.png" alt="yosef_quimico" >
       </header>
+      <hr>
       <div class="lab-home-grid">
         {categories.map((cat) => (
           <article class="lab-home-card" data-category={cat.slug}>

@@ -128,6 +128,59 @@ function selectArticle(slug: string) {
         showCategory(detail.slug);
       }
     });
+
+    // Deep-linking: soporte para #seccion y #seccion::subseccion
+    function processHash() {
+      const hash = window.location.hash;
+      if (!hash || hash === '#') {
+        showHome();
+        return;
+      }
+      const raw = decodeURIComponent(hash.slice(1));
+      const parts = raw.split('::');
+      const slug = parts[0];
+      const subsection = parts[1] || null;
+      if (!slug) return;
+
+      // Expandir la categoría que contiene este artículo (si existe en el sidebar)
+      const cat = categories.find((c) => c.entries.some((e) => e.slug === slug));
+      if (cat) {
+        expandedCategories.add(cat.slug);
+        expandedCategories = new Set(expandedCategories);
+      }
+
+      // Mostrar solo el artículo objetivo
+      const layer = document.querySelector(
+        `.lab-layer[id="${CSS.escape(slug)}"]`
+      ) as HTMLElement | null;
+      if (!layer) return;
+
+      const catData = layer.getAttribute('data-layer');
+      if (catData) activeCategory = catData;
+      activeArticle = slug;
+      activeSubsection = subsection;
+      expandedSubsections.add(slug);
+      expandedSubsections = new Set(expandedSubsections);
+      showOnlyArticle(slug);
+
+      setTimeout(() => {
+        if (subsection) {
+          const heading = findHeadingInArticle(slug, subsection);
+          if (heading) {
+            heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            heading.classList.remove('lab-subsection-highlight');
+            void heading.offsetWidth; // reflow para reiniciar la animación
+            heading.classList.add('lab-subsection-highlight');
+          }
+        } else {
+          const el = document.querySelector(`.lab-layer[id="${CSS.escape(slug)}"]`);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 80);
+    }
+
+    processHash();
+    window.addEventListener('hashchange', processHash);
   });
 
   function updateLayers(categorySlug: string) {

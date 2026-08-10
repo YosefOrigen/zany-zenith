@@ -1,6 +1,6 @@
 ---
 title: Cómo elegir un motor
-category: por-donde-empezar
+category: por donde empezar
 order: 7
 description: Factores clave para seleccionar el motor adecuado para tu proyecto.
 ---
