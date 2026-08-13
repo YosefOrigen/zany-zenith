@@ -110,8 +110,8 @@ function selectArticle(slug: string) {
     const layer = document.querySelector(`.lab-layer[id="${articleSlug}"]`);
     if (!layer) return null;
 
-    const normalizedTarget = subsection.replace(/[^\p{L}\p{N}\s]/gu, '').trim().toLowerCase();
-    const headings = layer.querySelectorAll('h2, h3');
+      const normalizedTarget = subsection.replace(/[^\p{L}\p{N}\s]/gu, '').trim().toLowerCase();
+      const headings = layer.querySelectorAll('h1, h2, h3');
     for (const h of headings) {
       const text = (h as HTMLElement).textContent?.replace(/[^\p{L}\p{N}\s]/gu, '').trim().toLowerCase() || '';
       if (text === normalizedTarget || text.includes(normalizedTarget) || normalizedTarget.includes(text)) {
@@ -130,6 +130,27 @@ function selectArticle(slug: string) {
     });
 
     // Deep-linking: soporte para #seccion y #seccion::subseccion
+    function normalize(str: string) {
+      return str.replace(/[\s\u00A0]+/g, ' ').replace(/[^\p{L}\p{N}\s]/gu, '').trim().toLowerCase();
+    }
+
+    function matchSubsectionName(articleSlug: string, headingEl: HTMLElement) {
+      const cat = categories.find((c) => c.entries.some((e) => e.slug === articleSlug));
+      if (!cat) return null;
+      const entry = cat.entries.find((e) => e.slug === articleSlug);
+      if (!entry || !entry.subsections) return null;
+      const headingText = (headingEl.textContent || '').trim();
+      const normalizedHeading = normalize(headingText);
+      for (const sub of entry.subsections) {
+        const n = normalize(sub);
+        if (n === normalizedHeading || n.includes(normalizedHeading) || normalizedHeading.includes(n)) {
+          return sub;
+        }
+      }
+      return null;
+    }
+
+    // Maneja hashes tipo '#slug::subsection' o '#elementId'
     function processHash() {
       const hash = window.location.hash;
       if (!hash || hash === '#') {
@@ -137,50 +158,120 @@ function selectArticle(slug: string) {
         return;
       }
       const raw = decodeURIComponent(hash.slice(1));
-      const parts = raw.split('::');
-      const slug = parts[0];
-      const subsection = parts[1] || null;
-      if (!slug) return;
 
-      // Expandir la categoría que contiene este artículo (si existe en el sidebar)
-      const cat = categories.find((c) => c.entries.some((e) => e.slug === slug));
-      if (cat) {
-        expandedCategories.add(cat.slug);
-        expandedCategories = new Set(expandedCategories);
+      if (raw.includes('::')) {
+        const parts = raw.split('::');
+        const slug = parts[0];
+        const subsection = parts[1] || null;
+        if (!slug) return;
+
+        const cat = categories.find((c) => c.entries.some((e) => e.slug === slug));
+        if (cat) {
+          expandedCategories.add(cat.slug);
+          expandedCategories = new Set(expandedCategories);
+        }
+
+        const layer = document.querySelector(`.lab-layer[id="${CSS.escape(slug)}"]`) as HTMLElement | null;
+        if (!layer) return;
+
+        const catData = layer.getAttribute('data-layer');
+        if (catData) activeCategory = catData;
+        activeArticle = slug;
+        activeSubsection = subsection;
+        expandedSubsections.add(slug);
+        expandedSubsections = new Set(expandedSubsections);
+        showOnlyArticle(slug);
+
+        setTimeout(() => {
+          if (subsection) {
+            const heading = findHeadingInArticle(slug, subsection);
+            if (heading) {
+              heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              heading.classList.remove('lab-subsection-highlight');
+              void heading.offsetWidth;
+              heading.classList.add('lab-subsection-highlight');
+            }
+          } else {
+            const el = document.querySelector(`.lab-layer[id="${CSS.escape(slug)}"]`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 80);
+        return;
       }
 
-      // Mostrar solo el artículo objetivo
-      const layer = document.querySelector(
-        `.lab-layer[id="${CSS.escape(slug)}"]`
-      ) as HTMLElement | null;
-      if (!layer) return;
+      // Si no es el formato slug::subsection, puede ser un id de elemento (p.ej. MDX)
+      const target = document.getElementById(raw);
+      if (target) {
+        const layer = target.closest('.lab-layer') as HTMLElement | null;
+        if (layer) {
+          const slug = layer.getAttribute('id') || '';
+          const catData = layer.getAttribute('data-layer');
+          if (catData) activeCategory = catData;
+          activeArticle = slug;
+          expandedSubsections.add(slug);
+          expandedSubsections = new Set(expandedSubsections);
+          showOnlyArticle(slug);
 
-      const catData = layer.getAttribute('data-layer');
-      if (catData) activeCategory = catData;
-      activeArticle = slug;
-      activeSubsection = subsection;
-      expandedSubsections.add(slug);
-      expandedSubsections = new Set(expandedSubsections);
-      showOnlyArticle(slug);
+          const matchedSub = matchSubsectionName(slug, target as HTMLElement);
+          if (matchedSub) activeSubsection = matchedSub;
 
-      setTimeout(() => {
-        if (subsection) {
-          const heading = findHeadingInArticle(slug, subsection);
-          if (heading) {
-            heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            heading.classList.remove('lab-subsection-highlight');
-            void heading.offsetWidth; // reflow para reiniciar la animación
-            heading.classList.add('lab-subsection-highlight');
-          }
-        } else {
-          const el = document.querySelector(`.lab-layer[id="${CSS.escape(slug)}"]`);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => {
+            (target as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            (target as HTMLElement).classList.remove('lab-subsection-highlight');
+            void (target as HTMLElement).offsetWidth;
+            (target as HTMLElement).classList.add('lab-subsection-highlight');
+          }, 80);
         }
-      }, 80);
+      }
     }
 
     processHash();
     window.addEventListener('hashchange', processHash);
+
+    // Observador para actualizar el TOC/links al hacer scroll por el contenido
+    const io = new IntersectionObserver((entries) => {
+      for (const ent of entries) {
+        if (!ent.isIntersecting) continue;
+        const heading = ent.target as HTMLElement;
+        const layer = heading.closest('.lab-layer') as HTMLElement | null;
+        if (!layer) continue;
+        const slug = layer.getAttribute('id') || '';
+        const matched = matchSubsectionName(slug, heading);
+        if (matched) {
+          activeArticle = slug;
+          activeSubsection = matched;
+          expandedSubsections.add(slug);
+          expandedSubsections = new Set(expandedSubsections);
+          showOnlyArticle(slug);
+        }
+      }
+    }, { root: null, rootMargin: '0px 0px -66% 0px', threshold: 0 });
+
+    function observeHeadings() {
+      const headings = document.querySelectorAll('.lab-layer h1[id], .lab-layer h2[id], .lab-layer h3[id]');
+      headings.forEach((h) => io.observe(h));
+    }
+
+    // Clicks en enlaces de ancla dentro del contenido (MD/MDX)
+    function onDocumentClick(e: Event) {
+      const el = e.target as HTMLElement;
+      const a = el.closest && el.closest('a');
+      if (!a) return;
+      const href = (a as HTMLAnchorElement).getAttribute('href') || '';
+      if (!href.startsWith('#')) return;
+      // Dejar que el navegador cambie el hash y luego processHash() se ejecutará por hashchange
+    }
+
+    // Iniciar observador y listeners
+    observeHeadings();
+    document.addEventListener('click', onDocumentClick);
+
+    // Cleanup al desmontar
+    return () => {
+      window.removeEventListener('hashchange', processHash);
+      document.removeEventListener('click', onDocumentClick);
+      io.disconnect();
+    };
   });
 
   function updateLayers(categorySlug: string) {
@@ -193,12 +284,15 @@ function selectArticle(slug: string) {
       el.style.display = el.getAttribute('data-layer') === categorySlug ? '' : 'none';
     });
 
-document.querySelectorAll('.lab-article-link').forEach((btn) => {
-      btn.classList.toggle('active', false);
+    // Limpiar estados activos al cambiar de categoría
+    document.querySelectorAll('.lab-article-link').forEach((btn) => {
+      (btn as HTMLElement).classList.toggle('active', false);
     });
     document.querySelectorAll('.lab-subsection-link').forEach((btn) => {
-      btn.classList.toggle('active', false);
+      (btn as HTMLElement).classList.toggle('active', false);
     });
+    activeArticle = null;
+    activeSubsection = null;
   }
 
   function showOnlyArticle(slug: string) {
@@ -211,15 +305,33 @@ document.querySelectorAll('.lab-article-link').forEach((btn) => {
       el.style.display = el.getAttribute('id') === slug ? '' : 'none';
     });
 
-document.querySelectorAll('.lab-article-link').forEach((btn) => {
+    document.querySelectorAll('.lab-article-link').forEach((btn) => {
       const btnEl = btn as HTMLElement;
       btnEl.classList.toggle('active', btnEl.getAttribute('data-article') === slug);
     });
 
+    // Solo marcar como active la subsección que coincida con `activeSubsection`
     document.querySelectorAll('.lab-subsection-link').forEach((btn) => {
       const btnEl = btn as HTMLElement;
-      btnEl.classList.toggle('active', btnEl.getAttribute('data-article') === slug);
+      const btnArticle = btnEl.getAttribute('data-article');
+      const btnSub = btnEl.getAttribute('data-subsection');
+      const isActive = btnArticle === slug && activeSubsection === btnSub;
+      btnEl.classList.toggle('active', !!isActive);
     });
+
+    // Si no hay subsección activa, hacer scroll al primer heading del artículo
+    if (!activeSubsection) {
+      setTimeout(() => {
+        const layerEl = document.querySelector(`.lab-layer[id="${CSS.escape(slug)}"]`) as HTMLElement | null;
+        if (!layerEl) return;
+        const firstHeading = layerEl.querySelector('h1, h2, h3') as HTMLElement | null;
+        if (firstHeading) {
+          firstHeading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          layerEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 60);
+    }
   }
 
   function handleMobileToggle() {
