@@ -13,29 +13,25 @@ const sections = await Promise.all(entries.map(async (entry) => ({
 // Definir orden de categorías
 const categoryOrder = [
   'Introducción',
-  'Por donde empezar',
+  'Inicio',
   // 'cursos',
   // 'herramientas',
-  // 'conceptos',
-  // 'faq',
 ];
 
 const categoryNames: Record<string, string> = {
   Introducción: 'Introducción',
-  'Por donde empezar': 'Por dónde empezar',
+  Inicio: "Inicio",
   // cursos: 'Cursos y tutoriales',
   // herramientas: 'Herramientas',
-  // conceptos: 'Conceptos',
-  // faq: 'Preguntas frecuentes',
+  
 };
 
 const categoryIcons: Record<string, string> = {
   Introducción: '📄',
-  'Por donde empezar': '🚀',
+  Inicio: '🤔',
   // cursos: '🎓',
   // herramientas: '🛠',
-  // conceptos: '🧠',
-  // faq: '❓',
+
 };
 
 

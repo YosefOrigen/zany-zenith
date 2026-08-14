@@ -85,7 +85,34 @@
   text-decoration: none;
   text-transform: uppercase;
 }
+:root.yosef .lab-layer a {
+  outline: none;
+  text-decoration: none;
+  padding: 2px 1px 0;
+}
 
+:root.yosef .lab-layer a:link {
+  color: var(--color-accent);
+}
+
+:root.yosef .lab-layer a:visited {
+  color: var(--color-accent);
+}
+
+:root.yosef .lab-layer a:focus {
+  border-bottom: 1px solid;
+  background: rgba(36, 194, 228, 0.1);
+}
+
+:root.yosef .lab-layer a:hover {
+  border-bottom: 1px solid;
+  background: rgba(36, 194, 228, 0.1);
+}
+
+:root.yosef .lab-layer a:active {
+  background: rgba(36, 194, 228, 0.1);
+  color: var(--color-accent);
+}
 :root.yosef .nav a:hover { color: var(--color-primary); }
 :root.yosef .nav-list li.cta a { display: block; padding: 12px 22px; color: #fff; }
 
@@ -132,6 +159,7 @@
 :root.yosef .social-icon:hover { transform: translateY(-6px); }
 :root.yosef .social-icon img { width: 36px; height: 36px; object-fit: contain; }
 :root.yosef .footer-banner img { width: 100%; }
+
 
 @media (max-width: 850px) {
   :root.yosef .hero-title h1 { font-size: clamp(3rem, 10vw, 5rem); }
