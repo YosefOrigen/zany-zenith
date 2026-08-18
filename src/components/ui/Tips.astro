@@ -1,0 +1,32 @@
+---
+interface Props {
+    type?: "verde" | "rojo" ;
+}
+
+const { type = "verde" } = Astro.props;
+---
+
+<div class= `tips ${type}`>
+    <div >
+        <slot />
+    </div>
+</div>
+
+<style>
+    .tips.verde {
+        color: #51B86E;
+        background-color: #f0fdf4;
+    }
+    
+    .tips.rojo {
+        color: #ff716e;
+        background-color: #ffefef;
+    }
+
+    .tips{
+        margin: 16px 0;   
+        border-left: 5px solid;
+        border-radius: 0.5rem;
+        padding: 1rem 1.25rem;
+    }
+</style>

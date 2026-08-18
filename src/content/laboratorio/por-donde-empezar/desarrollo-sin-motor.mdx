@@ -1,0 +1,137 @@
+---
+title: 💻 DESARROLLO SIN MOTOR
+category: Inicio
+order: 3
+description: Aquí veremos los lenguajes de programación más utilizados para desarrollar videojuegos sin utilizar un motor de video juego. 
+---
+import Tips from '../../../components/ui/Tips.astro';
+
+<Tips type="rojo">
+    <p> 👁️> ⚠️ **Aviso:** El desarrollo de videojuegos sin utilizar un motor no será el enfoque principal de este proyecto. Por ahora, estaremos trabajando específicamente con **Godot** como nuestro motor de desarrollo. Aun así, encontrarás aquí la información necesaria para conocer este enfoque y entender **qué tecnologías, lenguajes y herramientas deberías investigar** si en el futuro te interesa desarrollar videojuegos desde cero, sin depender de un motor.</p>
+
+</Tips>
+
+---
+
+## 🧠 ¿Qué significa desarrollar sin un motor?
+
+Cuando hablamos de desarrollar un videojuego **sin utilizar un motor**, nos referimos a construir gran parte de la tecnología necesaria para ejecutar el juego utilizando directamente un **lenguaje de programación**, junto con bibliotecas, APIs y otras herramientas.
+
+A diferencia de utilizar un motor como Godot, Unity o Unreal Engine, aquí no tenemos una herramienta que nos proporcione directamente sistemas completos para trabajar con escenas, físicas, animaciones, audio, entrada del jugador o renderizado.
+
+En su lugar, debemos construir o integrar estos sistemas nosotros mismos.
+
+> 💡 **En pocas palabras:** desarrollar sin motor significa tener un mayor control sobre la tecnología que utiliza tu juego, pero también asumir una mayor cantidad de trabajo técnico.
+
+---
+
+## ⚙️ ¿Qué hace un motor por nosotros?
+
+Antes de entender qué significa trabajar sin motor, es importante conocer todo lo que normalmente obtenemos al utilizar uno.
+
+Un motor de videojuegos puede proporcionar sistemas como:
+
+- 🎨 **Renderizado:** dibujar imágenes, modelos, luces y efectos.
+- 🧱 **Físicas:** gravedad, colisiones, cuerpos físicos, etc.
+- 🎬 **Animación:** reproducción y control de animaciones.
+- 🔊 **Audio:** reproducción, mezcla y control de sonidos.
+- 🎮 **Entrada:** teclado, mouse, controles y dispositivos.
+- 🗺️ **Escenas:** organización de objetos y niveles.
+- 🤖 **Inteligencia artificial:** herramientas para controlar comportamientos.
+- 💾 **Gestión de recursos:** imágenes, sonidos, modelos, fuentes y otros archivos.
+- 🖥️ **Ventanas:** creación y administración de la ventana del juego.
+- 📦 **Exportación:** generación del juego para diferentes plataformas.
+
+Cuando desarrollamos sin motor, tendremos que **implementar estos sistemas nosotros mismos o apoyarnos en bibliotecas que ya los proporcionen**.
+
+---
+
+## 🧩 ¿Necesitamos programarlo absolutamente todo?
+
+**No necesariamente.**
+
+Desarrollar sin un motor no significa que tengamos que escribir absolutamente cada línea de código desde cero.
+
+Podemos utilizar:
+
+- 📚 Bibliotecas
+- 🔧 Frameworks
+- 🖥️ APIs
+- 🎨 APIs gráficas
+- 🔊 Bibliotecas de audio
+- 🎮 Bibliotecas para entrada
+- 🧰 Herramientas externas
+
+La diferencia está principalmente en que **nosotros somos responsables de integrar y organizar estas piezas** para construir la tecnología que necesita nuestro juego.
+
+---
+
+# 💻 Lenguajes de programación
+
+Uno de los primeros conocimientos que necesitarás es un **lenguaje de programación**.
+
+Algunas opciones utilizadas en el desarrollo de videojuegos incluyen:
+
+<div className="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Lenguaje</th>
+        <th>Características</th>
+        <th>Uso habitual</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>C++</strong></td>
+        <td>Alto rendimiento y gran control sobre el hardware</td>
+        <td>Motores, juegos y tecnología de bajo nivel</td>
+      </tr>
+      <tr>
+        <td><strong>C</strong></td>
+        <td>Simple, rápido y cercano al hardware</td>
+        <td>Bibliotecas, motores y desarrollo de bajo nivel</td>
+      </tr>
+      <tr>
+        <td><strong>Rust</strong></td>
+        <td>Seguridad de memoria y buen rendimiento</td>
+        <td>Aplicaciones y tecnología de juegos</td>
+      </tr>
+      <tr>
+        <td><strong>C#</strong></td>
+        <td>Sintaxis accesible y ecosistema amplio</td>
+        <td>Juegos, herramientas y aplicaciones</td>
+      </tr>
+      <tr>
+        <td><strong>Java</strong></td>
+        <td>Multiplataforma y ecosistema maduro</td>
+        <td>Juegos y aplicaciones</td>
+      </tr>
+      <tr>
+        <td><strong>Python</strong></td>
+        <td>Sintaxis sencilla y gran cantidad de bibliotecas</td>
+        <td>Herramientas, prototipos y aprendizaje</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+> 🎯 **Para este proyecto no necesitas aprender todos estos lenguajes.** Si tu objetivo es seguir el recorrido principal del Laboratorio, trabajaremos con **GDScript y Godot**.
+
+---
+
+# 🖼️ ¿Cómo se muestran los gráficos?
+
+Una de las primeras cosas que debemos resolver es conseguir que nuestro programa pueda **dibujar algo en pantalla**.
+
+Para ello podemos utilizar diferentes APIs gráficas.
+
+Las más conocidas incluyen:
+
+- **OpenGL**
+- **Vulkan**
+- **Direct3D**
+- **Metal**
+
+Estas tecnologías permiten comunicarnos con la tarjeta gráfica para realizar tareas de renderizado.
+

@@ -34,6 +34,15 @@ let activeCategory = $state('');
     }
   });
 
+  function syncArticleNav() {
+    document.querySelectorAll('.lab-article-nav').forEach((nav) => {
+      const navEl = nav as HTMLElement;
+      const targetSlug = navEl.getAttribute('data-nav-for');
+      const shouldShow = activeArticle === targetSlug;
+      navEl.style.display = shouldShow ? 'flex' : 'none';
+    });
+  }
+
   function showHome() {
     activeCategory = '';
     activeArticle = null;
@@ -46,6 +55,8 @@ let activeCategory = $state('');
     layers.forEach((layer) => {
       (layer as HTMLElement).style.display = 'none';
     });
+
+    syncArticleNav();
 
     document.querySelectorAll('.lab-article-link').forEach((btn) => {
       btn.classList.toggle('active', false);
@@ -284,6 +295,10 @@ function selectArticle(slug: string) {
       el.style.display = el.getAttribute('data-layer') === categorySlug ? '' : 'none';
     });
 
+    document.querySelectorAll('.lab-article-nav').forEach((nav) => {
+      (nav as HTMLElement).style.display = 'none';
+    });
+
     // Limpiar estados activos al cambiar de categoría
     document.querySelectorAll('.lab-article-link').forEach((btn) => {
       (btn as HTMLElement).classList.toggle('active', false);
@@ -303,6 +318,11 @@ function selectArticle(slug: string) {
     layers.forEach((layer) => {
       const el = layer as HTMLElement;
       el.style.display = el.getAttribute('id') === slug ? '' : 'none';
+    });
+
+    document.querySelectorAll('.lab-article-nav').forEach((nav) => {
+      const navEl = nav as HTMLElement;
+      navEl.style.display = navEl.getAttribute('data-nav-for') === slug ? 'flex' : 'none';
     });
 
     document.querySelectorAll('.lab-article-link').forEach((btn) => {

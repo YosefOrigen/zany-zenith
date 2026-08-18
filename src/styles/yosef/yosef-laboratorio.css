@@ -534,22 +534,43 @@
   font-weight: 600;
 }
 
+:root.yosef .table-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+:root.yosef .table-wrap table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: .92rem;
+}
+
 /* ===== CONTENT LAYERS ===== */
 :root.yosef .lab-content {
   display: grid;
   gap: 24px;
   width: 100%;
   max-width: 920px;
+  min-width: 0;
   margin: 0 auto;
-
 }
 
 :root.yosef .lab-card {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 50px;
   border: 1px solid rgba(20, 20, 20, .08);
   border-radius: 28px;
   background: #fafafa;
   box-shadow: 0 24px 60px rgba(14, 25, 45, .06);
+  overflow: hidden;
 }
 
 :root.yosef .lab-card h1,
@@ -590,6 +611,53 @@
   margin-bottom: 0;
 }
 
+:root.yosef .lab-article-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(20, 20, 20, .08);
+}
+
+:root.yosef .lab-article-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+:root.yosef .lab-article-nav-label {
+  font-size: 0.7rem;
+  font-weight: 100;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+:root.yosef .lab-article-nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 170px;
+  padding: 12px 18px;
+  border: 1px solid rgba(1, 108, 156, .18);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-accent);
+  font: 700 .95rem 'Inter', sans-serif;
+  text-decoration: none;
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), background var(--transition-smooth);
+}
+
+:root.yosef .lab-article-nav-link:hover {
+  background: rgba(36, 194, 228, .06);
+  box-shadow: 0 8px 24px rgba(14, 25, 45, .08);
+  transform: translateY(-1px);
+}
+
+:root.yosef .lab-article-nav-link--next {
+  margin-left: auto;
+}
+
 :root.yosef .lab-card code {
   padding: .12em .3em;
   border-radius: 4px;
@@ -608,25 +676,28 @@
   padding: 0;
 }
 
-:root.yosef .lab-card table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 16px 0;
-  font-size: .92rem;
-}
-
-:root.yosef .lab-card th,
-:root.yosef .lab-card td {
+ .table-wrap th,
+ .table-wrap td {
   padding: 10px 14px;
   border: 1px solid rgba(20, 20, 20, .08);
   text-align: left;
+  white-space: nowrap;
 }
 
-:root.yosef .lab-card th {
+:root.yosef.table-wrap th {
   background: #f0f3f6;
   font-family: 'Barlow Condensed', sans-serif;
   font-weight: 700;
   color: #222;
+}
+
+:root.yosef.table-wrap::-webkit-scrollbar {
+  height: 8px;
+}
+
+:root.yosef.table-wrap::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(20, 20, 20, .18);
 }
 
 /* ===== RESPONSIVE (Mobile/Tablet) ===== */

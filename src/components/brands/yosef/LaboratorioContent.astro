@@ -52,6 +52,7 @@ const categories = categoryOrder
       })),
   }));
 
+const orderedArticleSlugs = categories.flatMap((category) => category.entries.map((entry) => entry.slug));
 const defaultCategory = categories.length > 0 ? categories[0].slug : '';
 ---
 
@@ -92,19 +93,46 @@ const defaultCategory = categories.length > 0 ? categories[0].slug : '';
       const cat = entry.data.category;
       const slug = entry.id.replace(/\.(md|mdx)$/, '').replace(/[/\\]/g, '-');
       const parent = entry.data.parent;
+      const currentIndex = orderedArticleSlugs.indexOf(slug);
+      const prevSlug = currentIndex > 0 ? orderedArticleSlugs[currentIndex - 1] : null;
+      const nextSlug = currentIndex >= 0 && currentIndex < orderedArticleSlugs.length - 1 ? orderedArticleSlugs[currentIndex + 1] : null;
+      const prevTitle = prevSlug ? sections.find((s) => s.entry.id.replace(/\.(md|mdx)$/, '').replace(/[/\\]/g, '-') === prevSlug)?.entry.data.title : null;
+      const nextTitle = nextSlug ? sections.find((s) => s.entry.id.replace(/\.(md|mdx)$/, '').replace(/[/\\]/g, '-') === nextSlug)?.entry.data.title : null;
+
       return (
-        <article
-          id={slug}
-          class="lab-card lab-layer"
-          data-layer={cat}
-          data-parent={parent || ''}
-          data-article-slug={slug}
-          style="display: none;"
-        >
-          <Heading>{entry.data.title}</Heading>
-          {entry.data.description && <p class="lab-description">{entry.data.description}</p>}
-          <Content />
-        </article>
+        <>
+          <article
+            id={slug}
+            class="lab-card lab-layer"
+            data-layer={cat}
+            data-parent={parent || ''}
+            data-article-slug={slug}
+            style="display: none;"
+          >
+            <Heading>{entry.data.title}</Heading>
+            {entry.data.description && <p class="lab-description">{entry.data.description}</p>}
+            <Content />
+          </article>
+
+          <div class="lab-article-nav" data-nav-for={slug}>
+            {prevSlug && (
+              <div class="lab-article-nav-item">
+                <span class="lab-article-nav-label">{prevTitle}</span>
+                <a class="lab-article-nav-link lab-article-nav-link--prev" href={`#${prevSlug}`}>
+                  ← Anterior
+                </a>
+              </div>
+            )}
+            {nextSlug && (
+              <div class="lab-article-nav-item lab-article-nav-item--next">
+                <span class="lab-article-nav-label">{nextTitle}</span>
+                <a class="lab-article-nav-link lab-article-nav-link--next" href={`#${nextSlug}`}>
+                  Siguiente →
+                </a>
+              </div>
+            )}
+          </div>
+        </>
       );
     })}
   </main>
