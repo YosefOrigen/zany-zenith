@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+
+const articulos = await getCollection('articulos');
+---
+
+<section class="articles-grid">
+{articulos.map((articulo) => (
+    <a
+      class="card"
+      href={articulo.data.link ?? '#'}
+      aria-label={articulo.data.title}
+    >
+      <div class="card-image">
+        <img src={articulo.data.img} alt={articulo.data.title} />
+      </div>
+      <h3>{articulo.data.title}</h3>
+      <p>{articulo.data.text}</p>
+    </a>
+  ))}
+</section>

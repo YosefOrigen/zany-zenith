@@ -13,14 +13,14 @@ const sections = await Promise.all(entries.map(async (entry) => ({
 // Definir orden de categorías
 const categoryOrder = [
   'Introducción',
-  'Inicio',
+  'Empieza a crear',
   // 'cursos',
   // 'herramientas',
 ];
 
 const categoryNames: Record<string, string> = {
   Introducción: 'Introducción',
-  Inicio: "Inicio",
+  'Empieza a crear': "Empieza a crear",
   // cursos: 'Cursos y tutoriales',
   // herramientas: 'Herramientas',
   
@@ -28,20 +28,56 @@ const categoryNames: Record<string, string> = {
 
 const categoryIcons: Record<string, string> = {
   Introducción: '📄',
-  Inicio: '🤔',
+  'Empieza a crear': '🏗️',
   // cursos: '🎓',
   // herramientas: '🛠',
 
 };
 
 
+const normalizeName = (value: string | undefined) =>
+  (value ?? '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[_-]+/g, ' ')
+    .trim();
+
+type BaseEntry = {
+  title: string;
+  slug: string;
+  parent?: string;
+  order: number;
+  subsections: string[];
+};
+
+type NestedEntry = BaseEntry & {
+  children: NestedEntry[];
+};
+
+const buildNestedEntries = (entries: BaseEntry[], parentName?: string): NestedEntry[] => {
+  const normalizedParent = parentName ? normalizeName(parentName) : '';
+
+  return entries
+    .filter((entry) => {
+      const parentValue = normalizeName(entry.parent);
+      if (!parentName) {
+        return !parentValue || parentValue === '';
+      }
+
+      return parentValue === normalizedParent;
+    })
+    .map((entry) => ({
+      ...entry,
+      children: buildNestedEntries(entries, entry.title),
+    }))
+    .sort((a, b) => a.order - b.order);
+};
+
 const categories = categoryOrder
   .filter((slug) => sections.some((s) => s.entry.data.category === slug))
-  .map((slug) => ({
-    slug,
-    title: categoryNames[slug] || slug,
-    icon: categoryIcons[slug] || slug,
-    entries: sections
+  .map((slug) => {
+    const categoryEntries = sections
       .filter((s) => s.entry.data.category === slug)
       .map((s) => ({
         title: s.entry.data.title,
@@ -49,10 +85,22 @@ const categories = categoryOrder
         parent: s.entry.data.parent,
         order: s.entry.data.order,
         subsections: s.entry.data.subsections || [],
-      })),
-  }));
+      }))
+      .sort((a, b) => a.order - b.order);
 
-const orderedArticleSlugs = categories.flatMap((category) => category.entries.map((entry) => entry.slug));
+    const entries = buildNestedEntries(categoryEntries);
+
+    return {
+      slug,
+      title: categoryNames[slug] || slug,
+      icon: categoryIcons[slug] || slug,
+      entries,
+    };
+  });
+
+const orderedArticleSlugs = categories.flatMap((category) =>
+  category.entries.map((entry: NestedEntry) => entry.slug),
+);
 const defaultCategory = categories.length > 0 ? categories[0].slug : '';
 ---
 
@@ -78,7 +126,7 @@ const defaultCategory = categories.length > 0 ? categories[0].slug : '';
       <hr>
       <div class="lab-home-grid">
         {categories.map((cat) => (
-          <article class="lab-home-card" data-category={cat.slug}>
+          <article class="lab-home-card" data-article={cat.entries[0]?.slug || ''}>
             <div class="lab-home-card-icon">{cat.icon}</div>
             <h2>{cat.title}</h2>
             <p>{cat.entries[0]?.title || 'Explorar categoría'}</p>
@@ -139,14 +187,13 @@ const defaultCategory = categories.length > 0 ? categories[0].slug : '';
 </div>
 
 <script>
-  // Intercept clicks on home cards to navigate to category
+  // Intercept clicks on home cards to open their first article
   document.addEventListener('click', (e) => {
     const card = (e.target as HTMLElement).closest('.lab-home-card');
     if (card) {
-      const cat = card.getAttribute('data-category');
-      if (cat) {
-        // Dispatch a custom event so the accordion shows the category content
-        window.dispatchEvent(new CustomEvent('open-category', { detail: { slug: cat } }));
+      const article = card.getAttribute('data-article');
+      if (article) {
+        window.location.hash = article;
       }
     }
   });

@@ -7,6 +7,7 @@
     parent?: string;
     order: number;
     subsections?: string[];
+    children?: Entry[];
   };
 
   type Category = {
@@ -28,10 +29,22 @@ let activeCategory = $state('');
   let expandedSubsections = $state(new Set<string>());
   let isSidebarOpen = $state(false);
 
+  function ensureParentEntriesExpanded() {
+    categories.forEach((cat) => {
+      cat.entries.forEach((entry) => {
+        if (entry.children && entry.children.length > 0) {
+          expandedSubsections.add(entry.slug);
+        }
+      });
+    });
+    expandedSubsections = new Set(expandedSubsections);
+  }
+
   onMount(() => {
     if (window.innerWidth > 850) {
       isSidebarOpen = true;
     }
+    ensureParentEntriesExpanded();
   });
 
   function syncArticleNav() {
@@ -80,6 +93,20 @@ function showCategory(slug: string) {
       expandedCategories.add(slug);
     }
     expandedCategories = new Set(expandedCategories);
+
+    const cat = categories.find((c) => c.slug === slug);
+    if (cat) {
+      cat.entries.forEach((entry) => {
+        if (entry.children && entry.children.length > 0) {
+          if (expandedCategories.has(slug)) {
+            expandedSubsections.add(entry.slug);
+          } else {
+            expandedSubsections.delete(entry.slug);
+          }
+        }
+      });
+      expandedSubsections = new Set(expandedSubsections);
+    }
   }
 
 function selectArticle(slug: string) {
@@ -402,9 +429,9 @@ function selectArticle(slug: string) {
                 {cat.title}
                 <span class="lab-accordion-icon" aria-hidden="true">⌄</span>
               </button>
-<ul id={`lab-panel-${cat.slug}`} class="lab-category-content" data-open={isExpanded}>
-{#each cat.entries as entry}
-                  {@const hasSubs = entry.subsections && entry.subsections.length > 0}
+              <ul id={`lab-panel-${cat.slug}`} class="lab-category-content" data-open={isExpanded}>
+                {#each cat.entries as entry}
+                  {@const hasSubs = Boolean(entry.children?.length) || (entry.subsections && entry.subsections.length > 0)}
                   {@const subsOpen = hasSubs && expandedSubsections.has(entry.slug)}
                   <li>
                     <button
@@ -428,22 +455,61 @@ function selectArticle(slug: string) {
                         >⌄</span>
                       {/if}
                     </button>
+
                     {#if subsOpen}
                       <ul class="lab-subsection-list">
-                        {#each entry.subsections as sub}
-                          <li>
-                            <button
-                              class="lab-subsection-link"
-                              class:active={activeSubsection === sub}
-                              data-article={entry.slug}
-                              data-subsection={sub}
-                              onclick={() => selectSubsection(entry.slug, sub)}
-                            >
-                              <span class="lab-sub-indicator">└</span>
-                              {sub}
-                            </button>
-                          </li>
-                        {/each}
+                        {#if entry.children && entry.children.length > 0}
+                          {#each entry.children as child}
+                            <li>
+                              <button
+                                class="lab-subsection-link"
+                                class:active={activeArticle === child.slug}
+                                data-article={child.slug}
+                                data-subsection={child.title}
+                                onclick={() => selectArticle(child.slug)}
+                              >
+                                <span class="lab-sub-indicator">└</span>
+                                {child.title}
+                              </button>
+
+                              {#if child.children && child.children.length > 0}
+                                <ul class="lab-subsection-list lab-subsection-list--nested">
+                                  {#each child.children as grandchild}
+                                    <li>
+                                      <button
+                                        class="lab-subsection-link"
+                                        class:active={activeArticle === grandchild.slug}
+                                        data-article={grandchild.slug}
+                                        data-subsection={grandchild.title}
+                                        onclick={() => selectArticle(grandchild.slug)}
+                                      >
+                                        <span class="lab-sub-indicator">└</span>
+                                        {grandchild.title}
+                                      </button>
+                                    </li>
+                                  {/each}
+                                </ul>
+                              {/if}
+                            </li>
+                          {/each}
+                        {/if}
+
+                        {#if entry.subsections && entry.subsections.length > 0}
+                          {#each entry.subsections as sub}
+                            <li>
+                              <button
+                                class="lab-subsection-link"
+                                class:active={activeSubsection === sub}
+                                data-article={entry.slug}
+                                data-subsection={sub}
+                                onclick={() => selectSubsection(entry.slug, sub)}
+                              >
+                                <span class="lab-sub-indicator">└</span>
+                                {sub}
+                              </button>
+                            </li>
+                          {/each}
+                        {/if}
                       </ul>
                     {/if}
                   </li>
