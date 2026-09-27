@@ -1,8 +1,4 @@
-:root.origen {
-  --color-primary: #1d4ed8;
-  --color-accent: #f59e0b;
-  --color-bg: #f1f4f9;
-}
+
 
 :root.yosef {
   --color-primary: #24c2e4;
@@ -13,12 +9,6 @@
   --glass-bg: rgba(255, 255, 255, 0.72);
   --glass-border: rgba(1, 108, 156, 0.12);
   --transition-smooth: 0.3s ease;
-}
-
-:root.bellum {
-  --color-primary: #0f766e;
-  --color-accent: #14b8a6;
-  --color-bg: #f1f4f9;
 }
 
 body {
