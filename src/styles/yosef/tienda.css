@@ -1,0 +1,81 @@
+:root.yosef .shop-page{max-width:1240px;margin:76px auto 0;padding:2rem 1.5rem 4rem}.shop{color:var(--text-main)}.shop-hero{display:grid;justify-items:center;gap:12px;padding:clamp(42px,7vw,82px) 24px;border:1px solid var(--glass-border);border-radius:32px;background:radial-gradient(ellipse at 50% 0,#24c2e433,transparent 65%),#ffffffb8;text-align:center}.shop-hero h1{margin:0;color:var(--color-accent);font:900 clamp(2.8rem,8vw,5.4rem)/.95 'Barlow Condensed',sans-serif;text-transform:uppercase}.shop-hero>p:not(.eyebrow){color:var(--text-secondary)}.eyebrow{color:var(--color-accent);font-size:.76rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase}.shop-hero button,.actions button,#dadd,.submit{padding:11px 18px;border:0;border-radius:999px;background:var(--color-accent);color:white;cursor:pointer;font-weight:700}.catalog-head{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:48px 0 22px}.catalog-head h2{font:800 2.6rem 'Barlow Condensed',sans-serif;text-transform:uppercase}.categories{display:flex;flex-wrap:wrap;gap:8px}.categories button{padding:8px 14px;border:1px solid var(--glass-border);border-radius:999px;background:white;cursor:pointer}.categories .active{background:#24c2e422;color:var(--color-accent)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:20px}.card{overflow:hidden;border:1px solid var(--glass-border);border-radius:24px;background:#ffffffdd;box-shadow:0 12px 25px #0001}.product-image{width:100%;height:210px;padding:20px;border:0;background:#effafd;cursor:pointer}.product-image img{width:100%;height:100%;object-fit:contain}.card-body{display:grid;gap:9px;padding:19px}.card-body small{color:var(--color-accent);font-weight:700}.card h3{font:800 1.5rem 'Barlow Condensed',sans-serif;text-transform:uppercase}.card p{min-height:40px;color:var(--text-secondary)}.actions{display:flex;align-items:center;justify-content:space-between}.card em,.disclaimer,#order small{color:#765b2c;font-size:.76rem}.disclaimer{text-align:center;color:var(--text-secondary)}#cart{position:fixed;z-index:1200;top:92px;right:20px;width:min(430px,calc(100vw - 28px));max-height:calc(100vh - 112px);overflow:auto;padding:22px;border:1px solid var(--glass-border);border-radius:24px;background:white;box-shadow:0 24px 80px #0003}#cart[hidden]{display:none}#cart header{display:flex;justify-content:space-between;align-items:center}#cart h2,#cart h3{font:800 1.6rem 'Barlow Condensed',sans-serif;text-transform:uppercase}#cart header button,#detail #x{border:0;background:none;font-size:1.6rem;cursor:pointer}#cart ul{padding-left:20px}#cart li{padding:8px 0}#cart li button{border:1px solid #ddd;border-radius:50%;background:white;cursor:pointer}.total{display:flex;justify-content:space-between;padding-top:12px;border-top:1px solid #ddd}.shop-checkout{display:grid;gap:10px}.shop-checkout label{display:grid;gap:5px;color:var(--text-secondary);font-size:.84rem}.shop-checkout input,.shop-checkout textarea{padding:10px;border:1px solid #d6e1e5;border-radius:10px;font:inherit}.payment{padding:12px;border-radius:12px;background:#eff9fb;color:var(--color-accent)}.submit{width:100%;border-radius:12px}.wa{display:block;margin-top:12px;padding:12px;border-radius:12px;background:#128c7e;color:white;text-align:center;text-decoration:none;font-weight:700}#order small{display:block;margin:8px 0}#detail{position:relative;width:min(480px,calc(100% - 30px));padding:28px;border:0;border-radius:24px}#detail::backdrop{background:#0c1e288c}#detail img{width:100%;height:220px;object-fit:contain;background:#effafd}#detail #x{position:absolute;right:14px;top:12px}#detail h2{font:800 2rem 'Barlow Condensed',sans-serif;text-transform:uppercase}@media(max-width:700px){:root.yosef .shop-page{padding:1rem}.catalog-head{align-items:start;flex-direction:column}#cart{top:78px;right:14px}}
+
+/* Mantiene las tarjetas de Tienda compactas y centradas como las de Inicio. */
+:root.yosef .shop .grid {
+  justify-content: center;
+  justify-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 0fr));
+  gap: 25px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+:root.yosef .shop .grid .card {
+  width: 100%;
+  max-width: 250px;
+  padding: 0;
+  box-sizing: border-box;
+}
+:root.yosef .shop .product-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  max-height: 180px;
+  box-sizing: border-box;
+}
+:root.yosef .shop .product-image img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+
+/* Formulario de compra */
+:root.yosef #cart #checkout {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid #e2eaed;
+}
+:root.yosef #cart #checkout h3 {
+  margin: 0 0 2px;
+}
+:root.yosef #cart #checkout label {
+  display: grid;
+  gap: 6px;
+  color: #42545c;
+  font-size: .9rem;
+  font-weight: 600;
+}
+:root.yosef #cart #checkout input,
+:root.yosef #cart #checkout textarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #cbd9de;
+  border-radius: 10px;
+  background: #fbfdfe;
+  color: #18343e;
+  font: inherit;
+  font-weight: 400;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+:root.yosef #cart #checkout textarea {
+  min-height: 82px;
+  resize: vertical;
+}
+:root.yosef #cart #checkout input:focus,
+:root.yosef #cart #checkout textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px #24c2e426;
+}
+:root.yosef #cart #checkout .payment {
+  margin: 0;
+}
+:root.yosef #cart #checkout .submit {
+  min-height: 46px;
+}
+
