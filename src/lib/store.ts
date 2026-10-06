@@ -1,5 +1,4 @@
-/** Modelo listo para la futura persistencia de pedidos en Supabase. */
+/** Tipos que comparte la tienda con la futura persistencia de pedidos. */
 export interface StoreOrderItem { productId:string; name:string; quantity:number; unitPrice:number }
-export interface StoreOrder { id:string; customer:{name:string;phone:string;address:string;notes?:string}; items:StoreOrderItem[]; total:number; paymentMethod:'cash_on_delivery'; status:'pending'; createdAt:string }
-export const supabaseReady=Boolean(import.meta.env.PUBLIC_SUPABASE_URL && import.meta.env.PUBLIC_SUPABASE_ANON_KEY);
-// Añadir credenciales mediante secretos de entorno al conectar el servicio.
+export type StoreOrderStatus = 'pending' | 'preparing' | 'shipped' | 'delivered' | 'cancelled';
+export interface StoreOrder { id:string; trackingToken:string; customer:{name:string;phone:string;address:string;notes?:string}; items:StoreOrderItem[]; total:number; paymentMethod:'cash_on_delivery'; status:StoreOrderStatus; createdAt:string }
