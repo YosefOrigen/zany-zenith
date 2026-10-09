@@ -79,3 +79,12 @@
   min-height: 46px;
 }
 
+:root.yosef .shop .catalog-empty {
+  grid-column: 1 / -1;
+  padding: 42px 20px;
+  border: 1px dashed var(--glass-border);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+

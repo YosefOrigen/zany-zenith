@@ -1,0 +1,193 @@
+---
+import YosefLayout from '../../layouts/YosefLayout.astro';
+import Header from '../../components/yosef/Header.astro';
+import Footer from '../../components/yosef/Footer.astro';
+---
+
+<YosefLayout title="Mi cuenta | Yosef Origen">
+  <Header />
+
+  <main class="account-page">
+    <section class="account-card" aria-labelledby="account-title">
+      <p class="account-eyebrow">Yosef Origen</p>
+      <h1 id="account-title">Tu cuenta</h1>
+      <p class="account-description">
+        Regístrate o inicia sesión para tener tu cuenta en la web.
+      </p>
+
+      <div class="account-signed-out" data-signed-out>
+        <button class="google-button" type="button" data-google-sign-in>
+          <svg aria-hidden="true" viewBox="0 0 48 48" width="20" height="20">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5Z" transform="translate(0 4)" />
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.92c-.58 2.96-2.26 5.48-4.76 7.18l7.73 6C44.4 38.05 46.98 31.95 46.98 24.55Z" transform="translate(0 -1)" />
+            <path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.75-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19Z" transform="translate(0 0)" />
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.9-5.8l-7.73-6c-2.14 1.44-4.88 2.3-8.17 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 43.62 14.62 48 24 48Z" />
+          </svg>
+          <span>Continuar con Google</span>
+        </button>
+      </div>
+
+      <div class="account-signed-in" data-signed-in hidden>
+        <p>Has iniciado sesión como</p>
+        <strong data-account-email></strong>
+        <button class="sign-out-button" type="button" data-sign-out>Cerrar sesión</button>
+      </div>
+
+      <p class="account-message" data-account-message role="status" aria-live="polite"></p>
+      <p class="account-privacy">
+        Al continuar, Supabase gestionará tu inicio de sesión. La web no recibe tu contraseña de Google.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</YosefLayout>
+
+<script>
+  import { getSupabaseClient } from '../../lib/supabase';
+
+  const supabase = getSupabaseClient();
+  const signedOut = document.querySelector<HTMLElement>('[data-signed-out]');
+  const signedIn = document.querySelector<HTMLElement>('[data-signed-in]');
+  const accountEmail = document.querySelector<HTMLElement>('[data-account-email]');
+  const message = document.querySelector<HTMLElement>('[data-account-message]');
+  const googleButton = document.querySelector<HTMLButtonElement>('[data-google-sign-in]');
+  const signOutButton = document.querySelector<HTMLButtonElement>('[data-sign-out]');
+
+  function showMessage(text: string) {
+    if (message) message.textContent = text;
+  }
+
+  function showUser(email?: string) {
+    if (signedOut) signedOut.hidden = Boolean(email);
+    if (signedIn) signedIn.hidden = !email;
+    if (accountEmail) accountEmail.textContent = email ?? '';
+  }
+
+  function continueAdminLogin(hasSession: boolean) {
+    if (!hasSession || sessionStorage.getItem('yosef-admin-login') !== 'true') return;
+    sessionStorage.removeItem('yosef-admin-login');
+    window.location.replace('/yosef/admin/');
+  }
+
+  if (!supabase) {
+    showMessage('La conexión con Supabase todavía no está configurada en esta web.');
+    if (googleButton) googleButton.disabled = true;
+  } else {
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (error) showMessage('No se pudo comprobar la sesión. Inténtalo de nuevo.');
+      showUser(data.session?.user.email);
+      continueAdminLogin(Boolean(data.session));
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      showUser(session?.user.email);
+      continueAdminLogin(Boolean(session));
+    });
+
+    googleButton?.addEventListener('click', async () => {
+      googleButton.disabled = true;
+      showMessage('Conectando con Google…');
+
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/yosef/cuenta`,
+        },
+      });
+
+      if (error) {
+        showMessage('No se pudo iniciar sesión con Google. Comprueba la configuración e inténtalo otra vez.');
+        googleButton.disabled = false;
+      }
+    });
+
+    signOutButton?.addEventListener('click', async () => {
+      const { error } = await supabase.auth.signOut();
+      showMessage(error ? 'No se pudo cerrar la sesión.' : 'Has cerrado la sesión.');
+    });
+  }
+</script>
+
+<style>
+  .account-page {
+    display: grid;
+    min-height: min(70vh, 720px);
+    place-items: center;
+    padding: 130px 20px 60px;
+  }
+
+  .account-card {
+    width: min(100%, 480px);
+    padding: clamp(28px, 6vw, 48px);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    background: var(--glass-bg);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .account-eyebrow {
+    margin: 0 0 8px;
+    color: var(--color-primary);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .account-card h1 {
+    margin: 0;
+    color: var(--color-accent);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(2.8rem, 8vw, 4rem);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .account-description {
+    margin: 14px 0 28px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .google-button,
+  .sign-out-button {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border: 1px solid #d1d5db;
+    border-radius: 14px;
+    background: #fff;
+    color: #222;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+  }
+
+  .google-button:hover,
+  .sign-out-button:hover { border-color: var(--color-primary); }
+  .google-button:disabled { cursor: wait; opacity: 0.6; }
+  .account-signed-in[hidden],
+  .account-signed-out[hidden] { display: none; }
+  .account-signed-in p { margin: 0 0 6px; color: var(--text-secondary); }
+  .account-signed-in strong { display: block; overflow-wrap: anywhere; }
+  .sign-out-button { margin-top: 20px; }
+
+  .account-message {
+    min-height: 1.5em;
+    margin: 18px 0 0;
+    color: var(--color-accent);
+  }
+
+  .account-privacy {
+    margin: 16px 0 0;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+</style>

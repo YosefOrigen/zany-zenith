@@ -3,18 +3,213 @@ import YosefLayout from '../../../layouts/YosefLayout.astro';
 import Header from '../../../components/yosef/Header.astro';
 import Footer from '../../../components/yosef/Footer.astro';
 import '../../../styles/yosef/tienda.css';
-const products=[{id:'cuaderno',name:'Cuaderno creativo',category:'Papelería',price:12,desc:'Un espacio para apuntar ideas y proyectos.',image:'/yosef_quimico_new.png'},{id:'kit',name:'Kit de creador',category:'Kits',price:24,desc:'Materiales para empezar a dar forma a tus ideas.',image:'/yosef_prototipador.png'},{id:'lamina',name:'Lámina Yosef',category:'Ilustración',price:9,desc:'Una lámina inspirada en el universo Yosef Origen.',image:'/yosef_quimico.png'}];
-const categories=['Todos',...new Set(products.map(p=>p.category))];const whatsapp=import.meta.env.PUBLIC_YOSEF_WHATSAPP??'';
+
+const products = [
+  { id: 'cuaderno', name: 'Cuaderno creativo', category: 'Papelería', price: 12, desc: 'Un espacio para apuntar ideas y proyectos.', image: '/yosef_quimico_new.png', demo: true },
+  { id: 'kit', name: 'Kit de creador', category: 'Kits', price: 24, desc: 'Materiales para empezar a dar forma a tus ideas.', image: '/yosef_prototipador.png', demo: true },
+  { id: 'lamina', name: 'Lámina Yosef', category: 'Ilustración', price: 9, desc: 'Una lámina inspirada en el universo Yosef Origen.', image: '/yosef_quimico.png', demo: true },
+];
+const whatsapp = import.meta.env.PUBLIC_YOSEF_WHATSAPP ?? '';
 ---
-<YosefLayout title="Tienda | Yosef Origen"><Header title="YOSEF ORIGEN" variant="header_2"/><main class="shop-page"><section class="shop"><header class="shop-hero"><p class="eyebrow">Yosef Origen · Tienda</p><h1>Ideas que cobran vida</h1><p>Explora la colección y prepara tu pedido directamente con nosotros.</p><button id="open">Mi carrito <span id="count">0</span></button></header><div class="catalog-head"><h2>Catálogo</h2><nav class="categories" aria-label="Categorías">{categories.map(c=><button data-filter={c}>{c}</button>)}</nav></div><div class="grid">{products.map(p=><article class="card" data-category={p.category}><button class="product-image" data-detail={p.id} aria-label={'Ver '+p.name}><img src={p.image} alt={p.name}/></button><div class="card-body"><small>{p.category}</small><h3>{p.name}</h3><p>{p.desc}</p><div class="actions"><strong>{p.price.toFixed(2)} €</strong><button data-add={p.id}>Añadir</button></div><em>Muestra · precio por confirmar</em></div></article>)}</div><dialog id="detail"></dialog><aside id="cart" hidden><header><h2>Tu pedido</h2><button id="close">×</button></header><div id="body"></div></aside><p class="disclaimer">Catálogo de demostración: artículos e importes pendientes de confirmar.</p></section></main><Footer/></YosefLayout>
-<script define:vars={{products,whatsapp}}>
-const bag=new Map();const cart=document.querySelector('#cart'),body=document.querySelector('#body'),money=n=>n.toFixed(2)+' €';try{JSON.parse(localStorage.getItem('yosef-cart')||'[]').forEach(([i,n])=>{if(products.some(p=>p.id===i))bag.set(i,n)})}catch{}
-function render(){let rows=[...bag].map(([id,n])=>({...products.find(p=>p.id===id),n})).filter(p=>p.id);document.querySelector('#count').textContent=rows.reduce((a,p)=>a+p.n,0);if(!rows.length){body.innerHTML='<p>El carrito está vacío.</p>';return}let total=rows.reduce((a,p)=>a+p.price*p.n,0);body.innerHTML='<ul>'+rows.map(p=>'<li>'+p.name+' × '+p.n+' '+money(p.price*p.n)+' <button data-q="'+p.id+'" data-d="-1">−</button><button data-q="'+p.id+'" data-d="1">+</button></li>').join('')+'</ul><p class="total">Total orientativo <b>'+money(total)+'</b></p><form id="checkout"><h3>Entrega y pago</h3><label>Nombre<input name="name" required></label><label>Teléfono<input name="phone" type="tel" required></label><label>Dirección<textarea name="address" required></textarea></label><label>Notas<textarea name="notes"></textarea></label><p class="payment">Pago contra entrega</p><button class="submit">Preparar pedido en WhatsApp</button></form><div id="order"></div>'}
-function save(){localStorage.setItem('yosef-cart',JSON.stringify([...bag]));render()}render();document.querySelector('#open').onclick=()=>cart.hidden=!cart.hidden;document.querySelector('#close').onclick=()=>cart.hidden=true;
-document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.card').forEach(c=>c.hidden=b.dataset.filter!=='Todos'&&c.dataset.category!==b.dataset.filter)});document.querySelector('[data-filter="Todos"]').classList.add('active');document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{bag.set(b.dataset.add,(bag.get(b.dataset.add)||0)+1);cart.hidden=false;save()});
-document.querySelectorAll('[data-detail]').forEach(b=>b.onclick=()=>{let p=products.find(x=>x.id===b.dataset.detail),d=document.querySelector('#detail');d.innerHTML='<button id="x">×</button><img src="'+p.image+'"><h2>'+p.name+'</h2><p>'+p.desc+'</p><b>'+money(p.price)+'</b><p>Muestra · precio por confirmar</p><button id="dadd">Añadir al carrito</button>';d.showModal();d.querySelector('#x').onclick=()=>d.close();d.querySelector('#dadd').onclick=()=>{bag.set(p.id,(bag.get(p.id)||0)+1);d.close();cart.hidden=false;save()}});
-body.onclick=e=>{let b=e.target.closest('[data-q]');if(!b)return;let n=(bag.get(b.dataset.q)||0)+Number(b.dataset.d);n?bag.set(b.dataset.q,n):bag.delete(b.dataset.q);save()};body.onsubmit=e=>{if(e.target.id!=='checkout')return;e.preventDefault();let f=new FormData(e.target),lines=[...bag].map(([id,n])=>{let p=products.find(x=>x.id===id);return p.name+' × '+n+' — '+money(p.price*n)}).join('\n'),total=[...bag].reduce((a,[id,n])=>a+products.find(p=>p.id===id).price*n,0),msg=['Pedido Yosef Origen','',lines,'','Total: '+money(total),'Pago contra entrega','','Nombre: '+f.get('name'),'Teléfono: '+f.get('phone'),'Dirección: '+f.get('address'),f.get('notes')].filter(Boolean).join('\n'),num=whatsapp.replace(/\D/g,'');document.querySelector('#order').innerHTML='<a class="wa" href="https://wa.me/'+num+'?text='+encodeURIComponent(msg)+'" target="_blank" rel="noopener">Abrir WhatsApp y enviar pedido</a>'+(!num?'<small>Configura PUBLIC_YOSEF_WHATSAPP para dirigir el pedido a la tienda.</small>':'')+'<small>Aún no se guarda en una base de datos.</small>'};
+
+<YosefLayout title="Tienda | Yosef Origen">
+  <Header title="YOSEF ORIGEN" variant="header_2" />
+  <main class="shop-page">
+    <section class="shop">
+      <header class="shop-hero">
+        <p class="eyebrow">Yosef Origen · Tienda</p>
+        <h1>Ideas que cobran vida</h1>
+        <p>Explora la colección y prepara tu pedido directamente con nosotros.</p>
+        <button id="open" type="button">Mi carrito <span id="count">0</span></button>
+      </header>
+      <div class="catalog-head">
+        <h2>Catálogo</h2>
+        <nav class="categories" aria-label="Categorías"></nav>
+      </div>
+      <div class="grid" aria-live="polite"></div>
+      <dialog id="detail"></dialog>
+      <aside id="cart" hidden>
+        <header><h2>Tu pedido</h2><button id="close" type="button" aria-label="Cerrar carrito">×</button></header>
+        <div id="body"></div>
+      </aside>
+      <p class="disclaimer">Catálogo de demostración: artículos e importes pendientes de confirmar.</p>
+    </section>
+  </main>
+  <Footer />
+</YosefLayout>
+
+<script define:vars={{ products, whatsapp }}>
+  let catalog = products;
+  let categories = [];
+  const bag = new Map();
+  const cart = document.querySelector('#cart');
+  const cartBody = document.querySelector('#body');
+  const grid = document.querySelector('.grid');
+  const categoryNav = document.querySelector('.categories');
+  const money = (value) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(value);
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[character]);
+
+  try {
+    JSON.parse(localStorage.getItem('yosef-cart') || '[]').forEach(([id, quantity]) => {
+      if (catalog.some((product) => product.id === id)) bag.set(id, quantity);
+    });
+  } catch {}
+
+  function renderCatalog() {
+    categories = ['Todos', ...new Set(catalog.map((product) => product.category).filter(Boolean))];
+    categoryNav.innerHTML = categories.map((category, index) =>
+      `<button type="button" data-filter="${escapeHtml(category)}" class="${index === 0 ? 'active' : ''}">${escapeHtml(category)}</button>`,
+    ).join('');
+
+    grid.innerHTML = catalog.length ? catalog.map((product) => `
+      <article class="card" data-category="${escapeHtml(product.category)}">
+        <button class="product-image" type="button" data-detail="${escapeHtml(product.id)}" aria-label="Ver ${escapeHtml(product.name)}">
+          <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" />
+        </button>
+        <div class="card-body">
+          <small>${escapeHtml(product.category || 'Colección')}</small>
+          <h3>${escapeHtml(product.name)}</h3>
+          <p>${escapeHtml(product.desc)}</p>
+          <div class="actions"><strong>${money(Number(product.price) || 0)}</strong><button type="button" data-add="${escapeHtml(product.id)}">Añadir</button></div>
+          ${product.demo ? '<em>Muestra · precio por confirmar</em>' : ''}
+        </div>
+      </article>`).join('') : '<p class="catalog-empty">En este momento no hay artículos activos en la tienda.</p>';
+  }
+
+  function renderCart() {
+    const rows = [...bag].map(([id, quantity]) => ({ ...catalog.find((product) => product.id === id), quantity })).filter((product) => product.id);
+    document.querySelector('#count').textContent = rows.reduce((total, product) => total + product.quantity, 0);
+    if (!rows.length) {
+      cartBody.innerHTML = '<p>El carrito está vacío.</p>';
+      return;
+    }
+    const total = rows.reduce((sum, product) => sum + Number(product.price) * product.quantity, 0);
+    cartBody.innerHTML = `<ul>${rows.map((product) => `<li>${escapeHtml(product.name)} × ${product.quantity} — ${money(Number(product.price) * product.quantity)} <button type="button" data-q="${escapeHtml(product.id)}" data-d="-1" aria-label="Quitar uno">−</button><button type="button" data-q="${escapeHtml(product.id)}" data-d="1" aria-label="Añadir uno">+</button></li>`).join('')}</ul>
+      <p class="total">Total orientativo <b>${money(total)}</b></p>
+      <form id="checkout">
+        <h3>Entrega y pago</h3>
+        <label>Nombre<input name="name" autocomplete="name" required /></label>
+        <label>Teléfono<input name="phone" type="tel" autocomplete="tel" required /></label>
+        <label>Dirección<textarea name="address" autocomplete="street-address" required></textarea></label>
+        <label>Notas<textarea name="notes"></textarea></label>
+        <p class="payment">Pago contra entrega</p>
+        <button class="submit" type="submit">Preparar pedido en WhatsApp</button>
+      </form><div id="order"></div>`;
+  }
+
+  function saveCart() {
+    localStorage.setItem('yosef-cart', JSON.stringify([...bag]));
+    renderCart();
+  }
+
+  renderCatalog();
+  renderCart();
+  document.querySelector('#open').addEventListener('click', () => { cart.hidden = !cart.hidden; });
+  document.querySelector('#close').addEventListener('click', () => { cart.hidden = true; });
+
+  categoryNav.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-filter]');
+    if (!button) return;
+    categoryNav.querySelectorAll('[data-filter]').forEach((item) => item.classList.toggle('active', item === button));
+    grid.querySelectorAll('.card').forEach((card) => {
+      card.hidden = button.dataset.filter !== 'Todos' && card.dataset.category !== button.dataset.filter;
+    });
+  });
+
+  grid.addEventListener('click', (event) => {
+    const addButton = event.target.closest('[data-add]');
+    if (addButton) {
+      const product = catalog.find((item) => item.id === addButton.dataset.add);
+      if (product && Number.isFinite(Number(product.stock)) && product.stock <= 0) return;
+      bag.set(addButton.dataset.add, (bag.get(addButton.dataset.add) || 0) + 1);
+      cart.hidden = false;
+      saveCart();
+      return;
+    }
+
+    const detailButton = event.target.closest('[data-detail]');
+    if (!detailButton) return;
+    const product = catalog.find((item) => item.id === detailButton.dataset.detail);
+    if (!product) return;
+    const dialog = document.querySelector('#detail');
+    dialog.innerHTML = `<button id="x" type="button" aria-label="Cerrar">×</button><img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}"><h2>${escapeHtml(product.name)}</h2><p>${escapeHtml(product.desc)}</p><b>${money(Number(product.price) || 0)}</b>${product.demo ? '<p>Muestra · precio por confirmar</p>' : ''}<button id="dadd" type="button">Añadir al carrito</button>`;
+    dialog.showModal();
+    dialog.querySelector('#x').addEventListener('click', () => dialog.close());
+    dialog.querySelector('#dadd').addEventListener('click', () => {
+      bag.set(product.id, (bag.get(product.id) || 0) + 1);
+      dialog.close();
+      cart.hidden = false;
+      saveCart();
+    });
+  });
+
+  cartBody.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-q]');
+    if (!button) return;
+    const quantity = (bag.get(button.dataset.q) || 0) + Number(button.dataset.d);
+    quantity > 0 ? bag.set(button.dataset.q, quantity) : bag.delete(button.dataset.q);
+    saveCart();
+  });
+
+  cartBody.addEventListener('submit', (event) => {
+    if (event.target.id !== 'checkout') return;
+    event.preventDefault();
+    const form = new FormData(event.target);
+    const rows = [...bag].map(([id, quantity]) => ({ ...catalog.find((product) => product.id === id), quantity })).filter((product) => product.id);
+    const total = rows.reduce((sum, product) => sum + Number(product.price) * product.quantity, 0);
+    const lines = rows.map((product) => `${product.name} × ${product.quantity} — ${money(Number(product.price) * product.quantity)}`).join('\n');
+    const message = ['Pedido Yosef Origen', '', lines, '', `Total: ${money(total)}`, 'Pago contra entrega', '', `Nombre: ${form.get('name')}`, `Teléfono: ${form.get('phone')}`, `Dirección: ${form.get('address')}`, form.get('notes')].filter(Boolean).join('\n');
+    const number = whatsapp.replace(/\D/g, '');
+    document.querySelector('#order').innerHTML = `<a class="wa" href="https://wa.me/${number}?text=${encodeURIComponent(message)}" target="_blank" rel="noopener">Abrir WhatsApp y enviar pedido</a>${!number ? '<small>Configura PUBLIC_YOSEF_WHATSAPP para dirigir el pedido a la tienda.</small>' : ''}<small>El seguimiento de pedidos se conectará en una etapa posterior.</small>`;
+  });
+
+  window.addEventListener('yosef-store-catalog', (event) => {
+    if (!Array.isArray(event.detail)) return;
+    catalog = event.detail;
+    for (const id of bag.keys()) if (!catalog.some((product) => product.id === id)) bag.delete(id);
+    renderCatalog();
+    saveCart();
+    document.querySelector('.disclaimer').textContent = catalog.length
+      ? 'Artículos e importes sincronizados con el inventario de la tienda.'
+      : 'No hay artículos activos publicados en este momento.';
+  });
 </script>
+
+<script>
+  import { getSupabaseClient } from '../../../lib/supabase';
+
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    const { data, error } = await supabase
+      .from('store_products')
+      .select('id, name, sku, price, stock, description, store_categories(name), store_product_images(storage_path, alt_text, position)')
+      .eq('is_active', true)
+      .order('name');
+
+    if (!error && data) {
+      const products = data.map((product) => {
+        const images = [...(product.store_product_images ?? [])].sort((a, b) => a.position - b.position);
+        const image = images[0];
+        return {
+          id: product.id,
+          name: product.name,
+          category: product.store_categories?.name ?? 'Colección',
+          price: Number(product.price),
+          stock: Number(product.stock),
+          desc: product.description,
+          image: image
+            ? supabase.storage.from('yosef-product-images').getPublicUrl(image.storage_path).data.publicUrl
+            : '/favicon.svg',
+          demo: false,
+        };
+      });
+      window.dispatchEvent(new CustomEvent('yosef-store-catalog', { detail: products }));
+    }
+  }
+</script>
+
 <script>
   import '../../../scripts/yosef-scroll.ts';
 </script>

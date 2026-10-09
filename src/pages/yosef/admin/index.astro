@@ -1,0 +1,46 @@
+---
+import YosefLayout from '../../../layouts/YosefLayout.astro';
+import InventoryAdmin from '../../../components/admin/InventoryAdmin.svelte';
+import '../../../styles/admin/inventory.css';
+---
+
+<YosefLayout title="Administrar tienda | Yosef Origen">
+  <Fragment slot="head">
+    <meta name="theme-color" content="#102a34" />
+    <meta name="description" content="Administración privada del catálogo de Yosef Origen." />
+    <link rel="manifest" href="/yosef-admin.webmanifest" />
+    <link rel="icon" href="/yosef-admin-icon.svg" type="image/svg+xml" />
+  </Fragment>
+  <main class="inventory-page">
+    <InventoryAdmin client:load />
+  </main>
+</YosefLayout>
+
+<script>
+  type InstallPromptEvent = Event & { prompt: () => Promise<unknown> };
+  let pendingInstall: InstallPromptEvent | null = null;
+  const installButton = document.querySelector<HTMLButtonElement>('#install-app');
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    pendingInstall = event as InstallPromptEvent;
+    if (installButton) installButton.hidden = false;
+  });
+
+  installButton?.addEventListener('click', async () => {
+    if (!pendingInstall) return;
+    await pendingInstall.prompt();
+    pendingInstall = null;
+    installButton.hidden = true;
+  });
+
+  window.addEventListener('appinstalled', () => {
+    if (installButton) installButton.hidden = true;
+  });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/yosef/admin/sw.js', { scope: '/yosef/admin/' });
+    });
+  }
+</script>

@@ -1,0 +1,32 @@
+{
+  "name": "Yosef Origen · Inventario",
+  "short_name": "Inventario",
+  "description": "Administra los artículos de la tienda Yosef Origen.",
+  "lang": "es",
+  "start_url": "/yosef/admin/",
+  "scope": "/yosef/admin/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f8f7",
+  "theme_color": "#102a34",
+  "icons": [
+    {
+      "src": "/yosef-admin-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/yosef-admin-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/yosef-admin-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
