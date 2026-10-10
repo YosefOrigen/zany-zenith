@@ -6,7 +6,7 @@ const navItems = [
   { label: 'Recursos', href: '/yosef/recursos' },
   { label: 'Tienda', href: '/yosef/tienda' },
 ];
-const { title = 'YOSEF ORIGEN', subheader, variant = 'default' } = Astro.props;
+const { title = 'YOSEF ORIGEN', subheader, variant = 'default', showAppLink = false } = Astro.props;
 ---
 
 <div class:list={['header-row', variant === 'header_2' && 'header-row--header_2']}>
@@ -31,7 +31,29 @@ const { title = 'YOSEF ORIGEN', subheader, variant = 'default' } = Astro.props;
           </li>
         ))}
         <li class="cta"><a href="/yosef/cuenta">Únete</a></li>
+        {showAppLink && <li class="cta"><a href="/yosef/admin/">Acceder a la app</a></li>}
+        <li class="profile-link" data-profile-item hidden>
+          <a href="/yosef/cuenta" aria-label="Mi perfil"><span>Mi perfil</span><small data-profile-email></small></a>
+        </li>
       </ul>
     </nav>
   </header>
 </div>
+
+<script>
+  import { getSupabaseClient } from '../../lib/supabase';
+
+  const supabase = getSupabaseClient();
+  const profileItem = document.querySelector<HTMLElement>('[data-profile-item]');
+  const profileEmail = document.querySelector<HTMLElement>('[data-profile-email]');
+
+  function renderProfile(email?: string) {
+    if (profileItem) profileItem.hidden = !email;
+    if (profileEmail) profileEmail.textContent = email ?? '';
+  }
+
+  if (supabase) {
+    supabase.auth.getSession().then(({ data }) => renderProfile(data.session?.user.email));
+    supabase.auth.onAuthStateChange((_event, session) => renderProfile(session?.user.email));
+  }
+</script>

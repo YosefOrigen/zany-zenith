@@ -76,6 +76,10 @@
 
 :root.yosef .nav-list li:hover { background: rgba(36, 194, 228, 0.1); }
 :root.yosef .nav-list li.cta { padding: 0; background: var(--color-primary); border-radius: 20px; gap: 1rem;}
+:root.yosef .nav-list li.profile-link { padding: 0; }
+:root.yosef .nav-list li.profile-link[hidden] { display: none; }
+:root.yosef .nav-list li.profile-link a { display: grid; gap: 2px; padding: 7px 12px; }
+:root.yosef .nav-list li.profile-link small { max-width: 180px; overflow: hidden; color: var(--text-secondary); font: 500 0.72rem 'Inter', sans-serif; text-overflow: ellipsis; text-transform: none; white-space: nowrap; }
 
 :root.yosef .nav a {
   color: #444;
